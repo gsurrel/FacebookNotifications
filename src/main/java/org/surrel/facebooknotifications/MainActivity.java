@@ -21,16 +21,24 @@ public class MainActivity extends Activity {
 
         Log.e("fbn.MainActivity", "onCreate");
 
+        String targetURL = "https://m.facebook.com/menu/bookmarks/";
+
+        if(getIntent().getExtras() != null) {
+            String url = getIntent().getExtras().getString("url", "");
+            if ("".equals(url) == false) {
+                targetURL = url;
+            }
+        }
+
         final WebView webview = new WebView(this);
         webview.setWebViewClient(new WebViewClient());
         webview.loadData("<h1>Request pending</h1>", "text/html", "UTF-8");
-
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new WebViewClient());
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(true);
         webSettings.setUserAgentString("Facebook Notifications");
-        webview.loadUrl("https://m.facebook.com/menu/bookmarks/");
+        webview.loadUrl(targetURL);
         setContentView(webview);
 
     }

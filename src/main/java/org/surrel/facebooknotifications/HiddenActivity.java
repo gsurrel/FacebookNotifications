@@ -56,12 +56,32 @@ public class HiddenActivity extends Activity {
             webview.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onPageFinished(WebView view, String url) {
-                    webview.loadUrl("javascript:window.notification.processJSON('{\"friends\":'+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)+',\"messages\":'+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)+',\"notifications\":'+document.querySelector(\"[href*='/notifications']\").text.match(/[0-9]+/)+'}');");
+                    webview.loadUrl("javascript:window.notification.processJSON('{\"home\":'+document.querySelector(\"[href*='/home']\")!=null+',\"friends\":'+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)+',\"messages\":'+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)+',\"notifications\":'+document.querySelector(\"[href*='/notifications']\").text.match(/[0-9]+/)+'}');");
                 }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    processJSON("{\"friends\":null,\"messages\":null,\"notifications\":null}");
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(getApplicationContext())
+                                    .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setContentTitle("Could not retrieve notifications")
+                                    .setContentText("Maybe you are logged out, please check")
+                                    //.setContentText(url)
+                                    .setPriority(Notification.PRIORITY_LOW)
+                                    .setCategory(Notification.CATEGORY_SOCIAL)
+                                    .setAutoCancel(true)
+                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+                    Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    resultIntent.putExtra("url", url);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
                     return false;
                 }
             });
@@ -77,6 +97,28 @@ public class HiddenActivity extends Activity {
     public void processJSON(String jsonStr) {
         try {
             JSONObject json = new JSONObject(jsonStr);
+            if(!json.optBoolean("home", false)) {
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext())
+                                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                .setContentTitle("Could not retrieve notifications")
+                                .setContentText("Maybe you are logged out, please check")
+                                .setContentText(jsonStr)
+                                .setPriority(Notification.PRIORITY_LOW)
+                                .setCategory(Notification.CATEGORY_SOCIAL)
+                                .setAutoCancel(true)
+                                .setVisibility(Notification.VISIBILITY_PUBLIC);
+                Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setContentIntent(resultPendingIntent);
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
+            }
             int nbFriends = json.optInt("friends", -1);
             int nbMessages = json.optInt("messages", -1);
             int nbNotifications = json.optInt("notifications", -1);
@@ -138,27 +180,6 @@ public class HiddenActivity extends Activity {
                                 .setVisibility(Notification.VISIBILITY_PUBLIC);
                 Intent resultIntent = new Intent(Intent.ACTION_VIEW);
                 resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
-            }
-            if (nbMessages == -1 && nbFriends == -1 && nbNotifications == -1) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(this)
-                                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle("Could not retrieve notifications")
-                                .setContentText("Maybe you are logged out, please check")
-                                .setPriority(Notification.PRIORITY_LOW)
-                                .setCategory(Notification.CATEGORY_SOCIAL)
-                                .setAutoCancel(true)
-                                .setVisibility(Notification.VISIBILITY_PUBLIC);
-                Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
                 stackBuilder.addNextIntent(resultIntent);
                 PendingIntent resultPendingIntent =
