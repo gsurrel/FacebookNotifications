@@ -19,8 +19,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.e("fbn.MainActivity", "onCreate");
-
         String targetURL = "https://m.facebook.com/menu/bookmarks/";
 
         if(getIntent().getExtras() != null) {
@@ -32,15 +30,14 @@ public class MainActivity extends Activity {
 
         final WebView webview = new WebView(this);
         webview.setWebViewClient(new WebViewClient());
-        webview.loadData("<h1>Request pending</h1>", "text/html", "UTF-8");
+        webview.loadData("<h1>"+getString(R.string.request_pending)+"</h1>", "text/html", "UTF-8");
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new WebViewClient());
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(true);
-        webSettings.setUserAgentString("Facebook Notifications");
+        webSettings.setUserAgentString(getString(R.string.app_name));
         webview.loadUrl(targetURL);
         setContentView(webview);
-
     }
 
     @Override

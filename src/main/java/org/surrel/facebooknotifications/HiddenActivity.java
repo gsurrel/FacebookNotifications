@@ -29,7 +29,7 @@ public class HiddenActivity extends Activity {
     private static final int NOTIF_NOTIFICATION = NOTIF_MESSAGE + 1;
 
     public static final int AlarmType = AlarmManager.ELAPSED_REALTIME;
-    public static final long TIME_SEC_MILLIS = AlarmManager.INTERVAL_FIFTEEN_MINUTES/3;
+    public static final long TIME_SEC_MILLIS = AlarmManager.INTERVAL_FIFTEEN_MINUTES / 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,46 +50,45 @@ public class HiddenActivity extends Activity {
             finish();
         } else {
             final WebView webview = new WebView(this);
-            webview.loadData("<h1>Request pending</h1>", "text/html", "UTF-8");
             webview.getSettings().setJavaScriptEnabled(true);
             webview.addJavascriptInterface(this, "notification");
             webview.setWebViewClient(new WebViewClient() {
                 @Override
                 public void onPageFinished(WebView view, String url) {
-                    webview.loadUrl("javascript:window.notification.processJSON('{\"home\":'+document.querySelector(\"[href*='/home']\")!=null+',\"friends\":'+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)+',\"messages\":'+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)+',\"notifications\":'+document.querySelector(\"[href*='/notifications']\").text.match(/[0-9]+/)+'}');");
+                    webview.loadUrl("javascript:window.notification.processJSON('{\"home\":'+(document.querySelector(\"[href*='/home']\")!=null)+',\"friends\":'+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)+',\"messages\":'+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)+',\"notifications\":'+document.querySelector(\"[href*='/notifications']\").text.match(/[0-9]+/)+'}');");
                 }
 
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(getApplicationContext())
-                                    .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                    .setContentTitle("Could not retrieve notifications")
-                                    .setContentText("Maybe you are logged out, please check")
-                                    //.setContentText(url)
-                                    .setPriority(Notification.PRIORITY_LOW)
-                                    .setCategory(Notification.CATEGORY_SOCIAL)
-                                    .setAutoCancel(true)
-                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
-                    Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    resultIntent.putExtra("url", url);
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                    stackBuilder.addNextIntent(resultIntent);
-                    PendingIntent resultPendingIntent =
-                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(resultPendingIntent);
-                    NotificationManager mNotificationManager =
-                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
-                    return false;
-                }
+//                @Override
+//                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                    NotificationCompat.Builder mBuilder =
+//                            new NotificationCompat.Builder(getApplicationContext())
+//                                    .setSmallIcon(android.R.drawable.ic_dialog_alert)
+//                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+//                                    .setContentTitle(getString(R.string.could_not_get_notifications))
+//                                    .setContentText(getString(R.string.maybe_logged_out))
+//                                            //.setContentText(url)
+//                                    .setPriority(Notification.PRIORITY_LOW)
+//                                    .setCategory(Notification.CATEGORY_SOCIAL)
+//                                    .setAutoCancel(true)
+//                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+//                    Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                    resultIntent.putExtra("url", url);
+//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+//                    stackBuilder.addNextIntent(resultIntent);
+//                    PendingIntent resultPendingIntent =
+//                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//                    mBuilder.setContentIntent(resultPendingIntent);
+//                    NotificationManager mNotificationManager =
+//                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                    mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
+//                    return false;
+//                }
             });
             WebSettings webSettings = webview.getSettings();
             webSettings.setBlockNetworkImage(true);
-            webSettings.setUserAgentString("Facebook Notifications");
+            webSettings.setUserAgentString(getString(R.string.app_name));
             webview.loadUrl("https://m.facebook.com/menu/bookmarks/");
-            setContentView(webview);
+            //setContentView(webview);
         }
     }
 
@@ -97,14 +96,13 @@ public class HiddenActivity extends Activity {
     public void processJSON(String jsonStr) {
         try {
             JSONObject json = new JSONObject(jsonStr);
-            if(!json.optBoolean("home", false)) {
+            if (!json.optBoolean("home", false)) {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(getApplicationContext())
                                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle("Could not retrieve notifications")
-                                .setContentText("Maybe you are logged out, please check")
-                                .setContentText(jsonStr)
+                                .setContentTitle(getString(R.string.could_not_get_notifications))
+                                .setContentText(getString(R.string.maybe_logged_out))
                                 .setPriority(Notification.PRIORITY_LOW)
                                 .setCategory(Notification.CATEGORY_SOCIAL)
                                 .setAutoCancel(true)
@@ -117,7 +115,7 @@ public class HiddenActivity extends Activity {
                 mBuilder.setContentIntent(resultPendingIntent);
                 NotificationManager mNotificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
+                mNotificationManager.notify(NOTIF_BASE, mBuilder.build());
             }
             int nbFriends = json.optInt("friends", -1);
             int nbMessages = json.optInt("messages", -1);
@@ -128,7 +126,7 @@ public class HiddenActivity extends Activity {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle("You have " + nbFriends + " friend request(s)")
+                                .setContentTitle(getString(R.string.you_have) + " " + nbFriends + " " + getString(R.string.friend_requests))
                                 .setPriority(Notification.PRIORITY_LOW)
                                 .setCategory(Notification.CATEGORY_SOCIAL)
                                 .setVibrate(new long[]{0, 300, 300, 300})
@@ -150,7 +148,7 @@ public class HiddenActivity extends Activity {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle("You have " + nbMessages + " new message(s)")
+                                .setContentTitle(getString(R.string.you_have) + " " + nbMessages + " " + getString(R.string.new_messages))
                                 .setPriority(Notification.PRIORITY_HIGH)
                                 .setCategory(Notification.CATEGORY_MESSAGE)
                                 .setVibrate(new long[]{0, 500})
@@ -172,7 +170,7 @@ public class HiddenActivity extends Activity {
                         new NotificationCompat.Builder(this)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle("You have " + nbNotifications + " new notifications(s)")
+                                .setContentTitle(getString(R.string.you_have) + " " + nbNotifications + " " + getString(R.string.new_notifications))
                                 .setPriority(Notification.PRIORITY_LOW)
                                 .setCategory(Notification.CATEGORY_SOCIAL)
                                 .setVibrate(new long[]{0, 300})

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Facebook Notifications</string>
+	<string name="could_not_get_notifications">Impossible de récupérer les notifications</string>
+	<string name="enable_notifications">Activer les notifications</string>
+	<string name="friend_requests">demande(s) d\'amitié</string>
+	<string name="maybe_logged_out">Vous être peut être déconnecté de Facebook</string>
+	<string name="new_messages">nouveau(x) messages(s)</string>
+	<string name="new_notifications">nouvelle(s) notification(s)</string>
+	<string name="request_pending">Requête en cours</string>
+	<string name="you_have">Vous avez</string>
+</resources>
