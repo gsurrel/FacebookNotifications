@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -39,6 +41,8 @@ public class UpdateService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if(!connectionAvailable()) return;
 
         webview = new WebView(this);
         webview.setVisibility(View.GONE);
@@ -184,6 +188,16 @@ public class UpdateService extends Service {
             e.printStackTrace();
         }
         this.stopSelf();
+    }
+
+    private boolean connectionAvailable() {
+        ConnectivityManager connMgr =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
