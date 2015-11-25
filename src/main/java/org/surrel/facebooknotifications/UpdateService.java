@@ -90,6 +90,7 @@ public class UpdateService extends Service {
 
     @JavascriptInterface
     public void processJSON(String jsonStr) {
+        if (!connectionAvailable()) return;
         Log.i("fbn", jsonStr);
         try {
             JSONObject json = new JSONObject(jsonStr);
@@ -194,10 +195,7 @@ public class UpdateService extends Service {
         ConnectivityManager connMgr =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-        if (activeInfo != null && activeInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return activeInfo != null && activeInfo.isConnected();
     }
 
     @Override
