@@ -50,15 +50,17 @@ public class UpdateService extends Service {
         webview.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                webview.loadUrl("javascript:window.notification.processJSON(\n" +
-                        "window.location.pathname == \"/login.php\" ? '{\"login\":true}' :\n" +
-                        "'{\"login\":false'+',\"friends\":'\n" +
-                        "+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)\n" +
-                        "+',\"messages\":'\n" +
-                        "+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)\n" +
-                        "+',\"notifications\":'\n" +
-                        "+document.querySelector(\"[href*='/notifications']\").text.match(/[0-9]+/)\n" +
-                        "+'}');");
+                /* Copy-paste friendly version:
+                javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>strong"); return elt!=null ? elt.textContent.match(/[0-9]+/) : "null";};
+                            window.notification.processJSON(window.location.pathname=="/login.php" ? '{"login":true}' : '{"login":false'+',"friends":'+get("friends")
+                            +',"messages":'+get("messages")
+                            +',"notifications":'+get("notifications")+'}');
+
+                 */
+                webview.loadUrl("javascript:get=function(url){elt=document.querySelector(\"[href*='/\"+url+\"']>strong\"); return elt!=null ? elt.textContent.match(/[0-9]+/) : \"null\";};\n" +
+                        "window.notification.processJSON(window.location.pathname==\"/login.php\" ? '{\"login\":true}' : '{\"login\":false'+',\"friends\":'+get(\"friends\")\n" +
+                        "+',\"messages\":'+get(\"messages\")\t\n" +
+                        "+',\"notifications\":'+get(\"notifications\")+'}');");
                 Log.i("fbn", "Loading finished");
             }
         });

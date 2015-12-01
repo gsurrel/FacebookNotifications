@@ -2,12 +2,9 @@ package org.surrel.facebooknotifications;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebSettings;
@@ -32,7 +29,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        updateNotificationSystem();
+        WakeupManager.updateNotificationSystem(this);
 
         final WebView webview = new WebView(this);
         webview.setWebViewClient(new WebViewClient());
@@ -45,18 +42,6 @@ public class MainActivity extends Activity {
         setContentView(webview);
     }
 
-    private void updateNotificationSystem() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intentForService = new Intent(this, UpdateService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intentForService, 0);
-        SharedPreferences sharedPref = getSharedPreferences("UpdatePrefs", Context.MODE_PRIVATE);
-        boolean notifications = sharedPref.getBoolean(getString(R.string.enable_notifications), true);
-        if(notifications) {
-            alarmManager.setInexactRepeating(AlarmType, SystemClock.elapsedRealtime()+5000, TIME_SEC_MILLIS, pendingIntent);
-        } else {
-            alarmManager.cancel(pendingIntent);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,12 +61,8 @@ public class MainActivity extends Activity {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean(getString(R.string.enable_notifications), newState);
             editor.apply();
-            updateNotificationSystem();
+            WakeupManager.updateNotificationSystem(this);
         }
-//        if(item.getItemId() == R.id.start)
-//            startService(new Intent(getApplication(), UpdateService.class));
-//        if(item.getItemId() == R.id.stop)
-//            stopService(new Intent(getApplication(), UpdateService.class));
         return true;
     }
 
