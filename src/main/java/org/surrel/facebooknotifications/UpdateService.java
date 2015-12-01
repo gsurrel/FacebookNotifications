@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -42,8 +40,8 @@ public class UpdateService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        if(!connectionAvailable()) return;
-
+//        if(!connectionAvailable()) return;
+//
         webview = new WebView(this);
         webview.setVisibility(View.GONE);
         webview.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -53,8 +51,8 @@ public class UpdateService extends Service {
             @Override
             public void onPageFinished(WebView view, String url) {
                 webview.loadUrl("javascript:window.notification.processJSON(\n" +
-                        "document.querySelector(\"[href*='/home']\")==null ? '{\"home\":false}' :\n" +
-                        "'{\"home\":true'+',\"friends\":'\n" +
+                        "window.location.pathname == \"/login.php\" ? '{\"login\":true}' :\n" +
+                        "'{\"login\":false'+',\"friends\":'\n" +
                         "+document.querySelector(\"[href*='/friends/']\").text.match(/[0-9]+/)\n" +
                         "+',\"messages\":'\n" +
                         "+document.querySelector(\"[href*='/messages/']\").text.match(/[0-9]+/)\n" +
@@ -90,11 +88,11 @@ public class UpdateService extends Service {
 
     @JavascriptInterface
     public void processJSON(String jsonStr) {
-        if (!connectionAvailable()) return;
+//        if (!connectionAvailable()) return;
         Log.i("fbn", jsonStr);
         try {
             JSONObject json = new JSONObject(jsonStr);
-            if (!json.optBoolean("home", false)) {
+            if (json.getBoolean("login")) {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(getApplicationContext())
                                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
@@ -114,76 +112,77 @@ public class UpdateService extends Service {
                 NotificationManager mNotificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(NOTIF_BASE, mBuilder.build());
-            }
-            int nbFriends = json.optInt("friends", -1);
-            int nbMessages = json.optInt("messages", -1);
-            int nbNotifications = json.optInt("notifications", -1);
-            Log.i("fbn", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
-            if (nbFriends > 0) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(this)
-                                .setSmallIcon(R.drawable.ic_notification)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle(getString(R.string.you_have) + " " + nbFriends + " " + getString(R.string.friend_requests))
-                                .setPriority(Notification.PRIORITY_LOW)
-                                .setCategory(Notification.CATEGORY_SOCIAL)
-                                .setVibrate(new long[]{0, 300, 300, 300})
-                                .setAutoCancel(true)
-                                .setVisibility(Notification.VISIBILITY_PUBLIC);
-                Intent resultIntent = new Intent(Intent.ACTION_VIEW);
-                resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(NOTIF_FRIEND, mBuilder.build());
-            }
-            if (nbMessages > 0) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(this)
-                                .setSmallIcon(R.drawable.ic_notification)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle(getString(R.string.you_have) + " " + nbMessages + " " + getString(R.string.new_messages))
-                                .setPriority(Notification.PRIORITY_HIGH)
-                                .setCategory(Notification.CATEGORY_MESSAGE)
-                                .setVibrate(new long[]{0, 500})
-                                .setAutoCancel(true)
-                                .setVisibility(Notification.VISIBILITY_PUBLIC);
-                Intent resultIntent = new Intent(Intent.ACTION_VIEW);
-                resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(NOTIF_MESSAGE, mBuilder.build());
-            }
-            if (nbNotifications > 0) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(this)
-                                .setSmallIcon(R.drawable.ic_notification)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle(getString(R.string.you_have) + " " + nbNotifications + " " + getString(R.string.new_notifications))
-                                .setPriority(Notification.PRIORITY_LOW)
-                                .setCategory(Notification.CATEGORY_SOCIAL)
-                                .setVibrate(new long[]{0, 300})
-                                .setAutoCancel(true)
-                                .setVisibility(Notification.VISIBILITY_PUBLIC);
-                Intent resultIntent = new Intent(Intent.ACTION_VIEW);
-                resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
-                NotificationManager mNotificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
+            } else {
+                int nbFriends = json.optInt("friends", -1);
+                int nbMessages = json.optInt("messages", -1);
+                int nbNotifications = json.optInt("notifications", -1);
+                Log.i("fbn", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
+                if (nbFriends > 0) {
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_notification)
+                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setContentTitle(getString(R.string.you_have) + " " + nbFriends + " " + getString(R.string.friend_requests))
+                                    .setPriority(Notification.PRIORITY_LOW)
+                                    .setCategory(Notification.CATEGORY_SOCIAL)
+                                    .setVibrate(new long[]{0, 300, 300, 300})
+                                    .setAutoCancel(true)
+                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+                    Intent resultIntent = new Intent(Intent.ACTION_VIEW);
+                    resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(NOTIF_FRIEND, mBuilder.build());
+                }
+                if (nbMessages > 0) {
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_notification)
+                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setContentTitle(getString(R.string.you_have) + " " + nbMessages + " " + getString(R.string.new_messages))
+                                    .setPriority(Notification.PRIORITY_HIGH)
+                                    .setCategory(Notification.CATEGORY_MESSAGE)
+                                    .setVibrate(new long[]{0, 500})
+                                    .setAutoCancel(true)
+                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+                    Intent resultIntent = new Intent(Intent.ACTION_VIEW);
+                    resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(NOTIF_MESSAGE, mBuilder.build());
+                }
+                if (nbNotifications > 0) {
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(this)
+                                    .setSmallIcon(R.drawable.ic_notification)
+                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                    .setContentTitle(getString(R.string.you_have) + " " + nbNotifications + " " + getString(R.string.new_notifications))
+                                    .setPriority(Notification.PRIORITY_LOW)
+                                    .setCategory(Notification.CATEGORY_SOCIAL)
+                                    .setVibrate(new long[]{0, 300})
+                                    .setAutoCancel(true)
+                                    .setVisibility(Notification.VISIBILITY_PUBLIC);
+                    Intent resultIntent = new Intent(Intent.ACTION_VIEW);
+                    resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(NOTIF_NOTIFICATION, mBuilder.build());
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -191,13 +190,13 @@ public class UpdateService extends Service {
         this.stopSelf();
     }
 
-    private boolean connectionAvailable() {
-        ConnectivityManager connMgr =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-        return activeInfo != null && activeInfo.isConnected();
-    }
-
+    //    private boolean connectionAvailable() {
+//        ConnectivityManager connMgr =
+//                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+//        return activeInfo != null && activeInfo.isConnected();
+//    }
+//
     @Override
     public void onDestroy() {
         super.onDestroy();
