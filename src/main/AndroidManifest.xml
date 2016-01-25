@@ -1,40 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	package="org.surrel.facebooknotifications"
-	xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.surrel.facebooknotifications">
 
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.VIBRATE"/>
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-	<application
-		android:allowBackup="true"
-		android:icon="@mipmap/ic_launcher"
-		android:label="@string/app_name"
-		android:supportsRtl="true"
-		android:theme="@style/AppTheme">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-		<activity
-			android:name=".MainActivity"
-			android:launchMode="singleTask">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="m.facebook.com"
+                    android:scheme="https" />
+                <data
+                    android:host="m.fb.com"
+                    android:scheme="https" />
+                <data
+                    android:host="touch.facebook.com"
+                    android:scheme="https" />
+                <data
+                    android:host="touch.fb.com"
+                    android:scheme="https" />
+                <data
+                    android:host="facebook.com"
+                    android:scheme="https" />
+                <data
+                    android:host="fb.com"
+                    android:scheme="https" />
+                <data
+                    android:host="www.facebook.com"
+                    android:scheme="https" />
+                <data
+                    android:host="www.fb.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
 
-		<receiver
-			android:name=".BootReceiver"
-			android:enabled="true">
-			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED"/>
-			</intent-filter>
-		</receiver>
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
-		<service android:enabled="true" android:name=".UpdateService"/>
-	</application>
+        <service
+            android:name=".UpdateService"
+            android:enabled="true" />
+    </application>
 
 
 </manifest>
