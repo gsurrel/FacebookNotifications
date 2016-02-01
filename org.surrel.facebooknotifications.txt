@@ -19,7 +19,7 @@ Repo Type:git
 Repo:https://github.com/gsurrel/FacebookNotifications.git
 
 Build:1.0,1
-    commit=v1.0
+    commit=v1.5.1
 
 Auto Update Mode:None
 Update Check Mode:Tags
