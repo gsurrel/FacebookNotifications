@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Facebook Notifications</string>
+    <string name="app_name">Facebook Notifications</string>
     <string name="enable_notifications">Enable notifications</string>
     <string name="request_pending">Request pending</string>
     <string name="could_not_get_notifications">Could not retrieve notifications</string>
