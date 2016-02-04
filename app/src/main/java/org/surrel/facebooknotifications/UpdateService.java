@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,9 +15,6 @@ import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,10 +30,7 @@ import org.json.JSONObject;
 
 public class UpdateService extends Service {
     private static final int NOTIF_BASE = 0;
-    private static final int NOTIF_FRIEND = NOTIF_BASE + 1;
-    private static final int NOTIF_MESSAGE = NOTIF_FRIEND + 1;
-    private static final int NOTIF_NOTIFICATION = NOTIF_MESSAGE + 1;
-    private static final int NOTIF_LOGIN = NOTIF_NOTIFICATION + 1;
+    private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
     private static final int NOTIF_UNIFIED = NOTIF_LOGIN + 1;
 
     private WindowManager windowManager;
@@ -98,8 +93,8 @@ public class UpdateService extends Service {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (json.getBoolean("login")) {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(getApplicationContext())
+                Notification.Builder mBuilder =
+                        new Notification.Builder(getApplicationContext())
                                 .setSmallIcon(android.R.drawable.ic_dialog_alert)
                                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                                 .setContentTitle(getString(R.string.could_not_get_notifications))
@@ -168,8 +163,8 @@ public class UpdateService extends Service {
                     }
 
                     // Basic common notification, will be altered for more important states (messages)
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(this)
+                    Notification.Builder mBuilder =
+                            new Notification.Builder(this)
                                     .setSmallIcon(R.drawable.ic_notification)
                                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                                     .setContentTitle(getString(R.string.app_name))
@@ -203,7 +198,7 @@ public class UpdateService extends Service {
                         }
                     } else {
                         // If it's a multicategory notification, create the BigView
-                        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(notifText));
+                        mBuilder.setStyle(new Notification.BigTextStyle().bigText(notifText));
                         if (nbFriends > 0) {
                             Intent btnIntent = (Intent) resultIntent.clone();
                             btnIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
@@ -269,7 +264,6 @@ public class UpdateService extends Service {
             windowManager.removeView(webview);
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
