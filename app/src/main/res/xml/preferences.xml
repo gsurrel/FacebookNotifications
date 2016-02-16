@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/enable_notifications"
+        android:title="@string/enable_notifications" />
+
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/notification_sound"
+        android:summary="@string/notification_sound_summary"
+        android:title="@string/notification_sound" />
+
+
+    <RingtonePreference
+        android:title="@string/notification_sound_choice"
+        android:key="@string/notification_sound_choice"
+        android:ringtoneType="all"
+        />
+
+</PreferenceScreen>

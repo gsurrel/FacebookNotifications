@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class WakeupManager {
@@ -13,7 +14,7 @@ public class WakeupManager {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intentForService = new Intent(context, UpdateService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intentForService, 0);
-        SharedPreferences sharedPref = context.getSharedPreferences("UpdatePrefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean notifications = sharedPref.getBoolean(context.getString(R.string.enable_notifications), true);
         Log.i("fbn", "Notifications enabled? " + notifications);
         if (notifications) {
