@@ -40,9 +40,6 @@ public class UpdateService extends Service {
     private WindowManager windowManager;
     private WebView webview;
     SharedPreferences sharedPreferences;
-    boolean notificationSoundFriends;
-    boolean notificationSoundMessages;
-    boolean notificationSoundNotifications;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -91,9 +88,6 @@ public class UpdateService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(webview, params);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        notificationSoundFriends = sharedPreferences.getBoolean("notification_sound_friends", true);
-        notificationSoundMessages = sharedPreferences.getBoolean("notification_sound_messages", true);
-        notificationSoundNotifications = sharedPreferences.getBoolean("notification_sound_notifications", true);
     }
 
     @SuppressWarnings("unused")
@@ -124,15 +118,10 @@ public class UpdateService extends Service {
                         stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
 
-                if (notificationSoundNotifications) {
-                    String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                    Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    if (str != null) {
-                        uri = Uri.parse(str);
-                    }
+                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                if (str != null) {
+                    Uri uri = Uri.parse(str);
                     mBuilder.setSound(uri);
-                } else {
-                    mBuilder.setDefaults(0);
                 }
 
                 mNotificationManager.notify(NOTIF_LOGIN, mBuilder.build());
@@ -208,15 +197,10 @@ public class UpdateService extends Service {
                         // If only one category, make the notification more specific
                         if (nbFriends > 0) {
                             resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
-                            if (notificationSoundFriends) {
-                                String str = sharedPreferences.getString("notification_sound_choice_friends", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                         if (nbMessages > 0) {
@@ -226,28 +210,18 @@ public class UpdateService extends Service {
                                 mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
                             }
                             resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
-                            if (notificationSoundMessages) {
-                                String str = sharedPreferences.getString("notification_sound_choice_messages", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                         if (nbNotifications > 0) {
                             resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
-                            if (notificationSoundNotifications) {
-                                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                     } else {
@@ -261,15 +235,10 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_menu_invite,
                                     getString(R.string.friends), pi);
-                            if (notificationSoundFriends) {
-                                String str = sharedPreferences.getString("notification_sound_choice_friends", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                         if (nbNotifications > 0) {
@@ -280,15 +249,10 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_menu_mapmode,
                                     getString(R.string.notifications), pi);
-                            if (notificationSoundNotifications) {
-                                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                         if (nbMessages > 0) {
@@ -299,15 +263,10 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_menu_start_conversation,
                                     getString(R.string.messages), pi);
-                            if (notificationSoundMessages) {
-                                String str = sharedPreferences.getString("notification_sound_choice_messages", null);
-                                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                if (str != null) {
-                                    uri = Uri.parse(str);
-                                }
+                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
-                            } else {
-                                mBuilder.setDefaults(0);
                             }
                         }
                     }

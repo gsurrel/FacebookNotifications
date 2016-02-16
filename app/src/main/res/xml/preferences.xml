@@ -14,10 +14,6 @@
 			android:defaultValue="true"
 			android:key="notification_friends"
 			android:title="@string/notification_category_activate"/>
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_sound_friends"
-			android:title="@string/notification_sound"/>
 		<RingtonePreference
 			android:key="notification_sound_choice_friends"
 			android:ringtoneType="notification"
@@ -31,10 +27,6 @@
 			android:defaultValue="true"
 			android:key="notification_messages"
 			android:title="@string/notification_category_activate"/>
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_sound_messages"
-			android:title="@string/notification_sound"/>
 		<RingtonePreference
 			android:key="notification_sound_choice_messages"
 			android:ringtoneType="notification"
@@ -48,10 +40,6 @@
 			android:defaultValue="true"
 			android:key="notification_notifications"
 			android:title="@string/notification_category_activate"/>
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_sound_notifications"
-			android:title="@string/notification_sound"/>
 		<RingtonePreference
 			android:key="notification_sound_choice_notifications"
 			android:ringtoneType="notification"
