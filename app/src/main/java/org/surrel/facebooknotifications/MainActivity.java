@@ -2,8 +2,7 @@ package org.surrel.facebooknotifications;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,23 +45,16 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        SharedPreferences sharedPref = this.getSharedPreferences("UpdatePrefs", Context.MODE_PRIVATE);
-        boolean notifications = sharedPref.getBoolean(getString(R.string.enable_notifications), true);
-        menu.getItem(0).setChecked(notifications);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.sample_action) {
-            final boolean newState = !item.isChecked();
-            item.setChecked(newState);
-            SharedPreferences sharedPref = this.getSharedPreferences("UpdatePrefs", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(getString(R.string.enable_notifications), newState);
-            editor.apply();
-            WakeupManager.updateNotificationSystem(this);
+
+        if(item.getItemId() == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, Prefs.class));
         }
+
         return true;
     }
 

@@ -12,9 +12,11 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -35,6 +37,8 @@ public class UpdateService extends Service {
 
     private WindowManager windowManager;
     private WebView webview;
+    SharedPreferences sharedPreferences;
+    boolean notificationSound;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -82,6 +86,8 @@ public class UpdateService extends Service {
         params.height = 0;
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(webview, params);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        notificationSound = sharedPreferences.getBoolean( getResources().getString(R.string.notification_sound), true );
     }
 
     @SuppressWarnings("unused")
@@ -111,6 +117,18 @@ public class UpdateService extends Service {
                 PendingIntent resultPendingIntent =
                         stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
+
+                if( notificationSound ){
+                    String str = sharedPreferences.getString( getResources().getString(R.string.notification_sound_choice), null );
+                    Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    if( str!=null ){
+                        uri = Uri.parse(str);
+                    }
+                    mBuilder.setSound( uri );
+                }else {
+                    mBuilder.setDefaults(0);
+                }
+
                 mNotificationManager.notify(NOTIF_LOGIN, mBuilder.build());
             } else {
                 // If we had a connection problem but now it's OK, remove the "login" notification
@@ -232,6 +250,18 @@ public class UpdateService extends Service {
                     PendingIntent resultPendingIntent =
                             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(resultPendingIntent);
+
+                    if( notificationSound ){
+                        String str = sharedPreferences.getString( getResources().getString(R.string.notification_sound_choice), null );
+                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        if( str!=null ){
+                            uri = Uri.parse(str);
+                        }
+                        mBuilder.setSound( uri );
+                    }else {
+                        mBuilder.setDefaults(0);
+                    }
+
                     mNotificationManager.notify(NOTIF_UNIFIED, mBuilder.build());
                 } else {
                     Log.i("fbn", "Same number of events per categories, skipping notification");

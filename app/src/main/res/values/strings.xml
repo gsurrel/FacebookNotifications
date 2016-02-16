@@ -15,4 +15,11 @@
     <string name="friends">Friends</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
+    <string name="settings">Settings</string>
+
+    <string name="notification_sound">Notification Sound</string>
+    <string name="notification_sound_summary">Enable / Disable sound in notifications</string>
+    <string name="notification_sound_choice">Choose notification sound</string>
+
+
 </resources>
