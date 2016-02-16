@@ -2,23 +2,60 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="@string/enable_notifications"
-        android:title="@string/enable_notifications" />
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="@string/enable_notification_synchro"
+		android:title="@string/enable_notification_synchro"/>
 
+	<PreferenceCategory
+		android:key="@string/friends"
+		android:title="@string/friends">
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_friends"
+			android:title="@string/notification_category_activate"/>
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_sound_friends"
+			android:title="@string/notification_sound"/>
+		<RingtonePreference
+			android:key="notification_sound_choice_friends"
+			android:ringtoneType="notification"
+			android:title="@string/notification_sound_choice"/>
+	</PreferenceCategory>
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="@string/notification_sound"
-        android:summary="@string/notification_sound_summary"
-        android:title="@string/notification_sound" />
+	<PreferenceCategory
+		android:key="@string/messages"
+		android:title="@string/messages">
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_messages"
+			android:title="@string/notification_category_activate"/>
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_sound_messages"
+			android:title="@string/notification_sound"/>
+		<RingtonePreference
+			android:key="notification_sound_choice_messages"
+			android:ringtoneType="notification"
+			android:title="@string/notification_sound_choice"/>
+	</PreferenceCategory>
 
-
-    <RingtonePreference
-        android:title="@string/notification_sound_choice"
-        android:key="@string/notification_sound_choice"
-        android:ringtoneType="all"
-        />
+	<PreferenceCategory
+		android:key="@string/notifications"
+		android:title="@string/notifications">
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_notifications"
+			android:title="@string/notification_category_activate"/>
+		<CheckBoxPreference
+			android:defaultValue="true"
+			android:key="notification_sound_notifications"
+			android:title="@string/notification_sound"/>
+		<RingtonePreference
+			android:key="notification_sound_choice_notifications"
+			android:ringtoneType="notification"
+			android:title="@string/notification_sound_choice"/>
+	</PreferenceCategory>
 
 </PreferenceScreen>

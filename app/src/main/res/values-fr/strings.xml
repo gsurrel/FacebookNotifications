@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Facebook Notifications</string>
-    <string name="enable_notifications">Activer les notifications</string>
+
     <string name="request_pending">Requête en cours</string>
     <string name="could_not_get_notifications">Impossible de récupérer les notifications</string>
     <string name="maybe_logged_out">Vous être peut être déconnecté de Facebook</string>
@@ -15,4 +15,11 @@
     <string name="friends">Amis</string>
     <string name="messages">Messages</string>
     <string name="notifications">Notifications</string>
+
+    <string name="settings">Préférences</string>
+    <string name="enable_notification_synchro">Activer la synchronisation</string>
+    <string name="notification_category_activate">Activer cette catégorie</string>
+    <string name="notification_sound">Notifications sonores</string>
+    <string name="notification_sound_choice">Son de notification</string>
+
 </resources>
