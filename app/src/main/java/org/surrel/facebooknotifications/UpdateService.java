@@ -30,6 +30,8 @@ import android.webkit.WebViewClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class UpdateService extends Service {
     private static final int NOTIF_BASE = 0;
     private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
@@ -38,7 +40,6 @@ public class UpdateService extends Service {
     private WindowManager windowManager;
     private WebView webview;
     SharedPreferences sharedPreferences;
-    boolean notificationSound;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -64,7 +65,7 @@ public class UpdateService extends Service {
                         "window.customInterface.processJSON(window.location.pathname==\"/login.php\" ? '{\"login\":true}' : '{\"login\":false'+',\"friends\":'+get(\"friends\")\n" +
                         "+',\"messages\":'+get(\"messages\")\t\n" +
                         "+',\"notifications\":'+get(\"notifications\")+'}');");
-                Log.i("fbn", "Loading finished");
+                Log.i("fbn.UpdateService", "Loading finished");
             }
         });
 
@@ -87,13 +88,12 @@ public class UpdateService extends Service {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         windowManager.addView(webview, params);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        notificationSound = sharedPreferences.getBoolean( getResources().getString(R.string.notification_sound), true );
     }
 
     @SuppressWarnings("unused")
     @JavascriptInterface
     public void processJSON(String jsonStr) {
-        Log.i("fbn", jsonStr);
+        Log.i("fbn.UpdateService", jsonStr);
         try {
             JSONObject json = new JSONObject(jsonStr);
             NotificationManager mNotificationManager =
@@ -118,25 +118,20 @@ public class UpdateService extends Service {
                         stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(resultPendingIntent);
 
-                if( notificationSound ){
-                    String str = sharedPreferences.getString( getResources().getString(R.string.notification_sound_choice), null );
-                    Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    if( str!=null ){
-                        uri = Uri.parse(str);
-                    }
-                    mBuilder.setSound( uri );
-                }else {
-                    mBuilder.setDefaults(0);
+                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                if (str != null) {
+                    Uri uri = Uri.parse(str);
+                    mBuilder.setSound(uri);
                 }
 
                 mNotificationManager.notify(NOTIF_LOGIN, mBuilder.build());
             } else {
                 // If we had a connection problem but now it's OK, remove the "login" notification
                 mNotificationManager.cancel(NOTIF_LOGIN);
-                int nbFriends = json.optInt("friends", 0);
-                int nbMessages = json.optInt("messages", 0);
-                int nbNotifications = json.optInt("notifications", 0);
-                Log.i("fbn", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
+                int nbFriends = sharedPreferences.getBoolean("notification_friends", true) ? json.optInt("friends", 0) : 0;
+                int nbMessages = sharedPreferences.getBoolean("notification_messages", true) ? json.optInt("messages", 0) : 0;
+                int nbNotifications = sharedPreferences.getBoolean("notification_notifications", true) ? json.optInt("notifications", 0) : 0;
+                Log.i("fbn.UpdateService", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
 
                 SharedPreferences settings = getSharedPreferences("NotifCount", 0);
 
@@ -202,6 +197,11 @@ public class UpdateService extends Service {
                         // If only one category, make the notification more specific
                         if (nbFriends > 0) {
                             resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
                         }
                         if (nbMessages > 0) {
                             mBuilder.setPriority(Notification.PRIORITY_HIGH)
@@ -210,12 +210,22 @@ public class UpdateService extends Service {
                                 mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
                             }
                             resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
                         }
                         if (nbNotifications > 0) {
                             resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
                         }
                     } else {
-                        // If it's a multicategory notification, create the BigView
+                        // If it's a multicategory notification, create the BigView and set the sound by priority: messages > notif > requests
                         mBuilder.setStyle(new Notification.BigTextStyle().bigText(notifText));
                         if (nbFriends > 0) {
                             Intent btnIntent = (Intent) resultIntent.clone();
@@ -225,15 +235,11 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_menu_invite,
                                     getString(R.string.friends), pi);
-                        }
-                        if (nbMessages > 0) {
-                            Intent btnIntent = (Intent) resultIntent.clone();
-                            btnIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
-                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                            sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.addAction(R.drawable.ic_menu_start_conversation,
-                                    getString(R.string.messages), pi);
+                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
                         }
                         if (nbNotifications > 0) {
                             Intent btnIntent = (Intent) resultIntent.clone();
@@ -243,6 +249,25 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             mBuilder.addAction(R.drawable.ic_menu_mapmode,
                                     getString(R.string.notifications), pi);
+                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
+                        }
+                        if (nbMessages > 0) {
+                            Intent btnIntent = (Intent) resultIntent.clone();
+                            btnIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                            sBuilder.addNextIntent(btnIntent);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            mBuilder.addAction(R.drawable.ic_menu_start_conversation,
+                                    getString(R.string.messages), pi);
+                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                            if (str != null) {
+                                Uri uri = Uri.parse(str);
+                                mBuilder.setSound(uri);
+                            }
                         }
                     }
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -250,21 +275,9 @@ public class UpdateService extends Service {
                     PendingIntent resultPendingIntent =
                             stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.setContentIntent(resultPendingIntent);
-
-                    if( notificationSound ){
-                        String str = sharedPreferences.getString( getResources().getString(R.string.notification_sound_choice), null );
-                        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        if( str!=null ){
-                            uri = Uri.parse(str);
-                        }
-                        mBuilder.setSound( uri );
-                    }else {
-                        mBuilder.setDefaults(0);
-                    }
-
                     mNotificationManager.notify(NOTIF_UNIFIED, mBuilder.build());
                 } else {
-                    Log.i("fbn", "Same number of events per categories, skipping notification");
+                    Log.i("fbn.UpdateService", "Same number of events per categories, skipping notification");
                 }
 
                 // Save in the settings the current count of notifs per type
@@ -280,13 +293,6 @@ public class UpdateService extends Service {
         this.stopSelf();
     }
 
-    //    private boolean connectionAvailable() {
-//        ConnectivityManager connMgr =
-//                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-//        return activeInfo != null && activeInfo.isConnected();
-//    }
-//
     @Override
     public void onDestroy() {
         super.onDestroy();

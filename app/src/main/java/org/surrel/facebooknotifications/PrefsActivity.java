@@ -2,11 +2,14 @@ package org.surrel.facebooknotifications;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 
-public class Prefs extends PreferenceActivity  implements SharedPreferences.OnSharedPreferenceChangeListener  {
+public class PrefsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,9 +22,9 @@ public class Prefs extends PreferenceActivity  implements SharedPreferences.OnSh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        Log.d( "prefs changing", key );
+        Log.d("fbn.PrefsActivity", key);
 
-        if( key.equals( getResources().getString(R.string.enable_notifications) ) ){
+        if (key.equals(getResources().getString(R.string.enable_notification_synchro))) {
             WakeupManager.updateNotificationSystem(this);
         }
 

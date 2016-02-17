@@ -15,7 +15,7 @@ public class WakeupManager {
         Intent intentForService = new Intent(context, UpdateService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intentForService, 0);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean notifications = sharedPref.getBoolean(context.getString(R.string.enable_notifications), true);
+        boolean notifications = sharedPref.getBoolean(context.getString(R.string.enable_notification_synchro), true);
         Log.i("fbn", "Notifications enabled? " + notifications);
         if (notifications) {
             alarmManager.setInexactRepeating(MainActivity.AlarmType, SystemClock.elapsedRealtime() + 5000, MainActivity.TIME_SEC_MILLIS, pendingIntent);
