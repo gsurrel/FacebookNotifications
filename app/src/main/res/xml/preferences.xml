@@ -8,12 +8,12 @@
 		android:title="@string/enable_notification_synchro"/>
 
 	<EditTextPreference
-		android:title="@string/update_interval"
-        android:dialogTitle="@string/enter_seconds"
-		android:summary="@string/update_interval_summary"
-		android:key="@string/update_interval"
 		android:defaultValue="5"
+		android:dialogTitle="@string/enter_minutes"
 		android:inputType="number"
+		android:key="@string/update_interval"
+		android:summary="@string/update_interval_summary"
+		android:title="@string/update_interval"
 		/>
 
 	<PreferenceCategory

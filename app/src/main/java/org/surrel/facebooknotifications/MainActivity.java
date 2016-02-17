@@ -13,7 +13,6 @@ import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
     public static final int AlarmType = AlarmManager.ELAPSED_REALTIME_WAKEUP;
-    public static final long TIME_SEC_MILLIS = AlarmManager.INTERVAL_FIFTEEN_MINUTES / 3;
 
     private WebView webview;
 

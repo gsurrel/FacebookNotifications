@@ -21,5 +21,8 @@
     <string name="notification_category_activate">Activer cette catégorie</string>
     <string name="notification_sound">Notifications sonores</string>
     <string name="notification_sound_choice">Son de notification</string>
+    <string name="update_interval">Fréquence de mise à jour</string>
+    <string name="enter_minutes">Délai de mise à jour (en minutes)</string>
+    <string name="update_interval_summary">Vérifier les notifications environ toutes les … minutes, de une minute à une semaine</string>
 
 </resources>

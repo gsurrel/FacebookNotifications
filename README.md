@@ -8,6 +8,9 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.6.2_
+   *  Custom update time added in the settings
+
 * _1.6.1_
    *  Simplified preferences page, allowing to disable sound notification by selecting the "None" sound
 

@@ -18,16 +18,15 @@ public class WakeupManager {
         boolean notifications = sharedPref.getBoolean(context.getString(R.string.enable_notification_synchro), true);
         Log.i("fbn", "Notifications enabled? " + notifications);
         if (notifications) {
-
-            int refreshTime = 5;
-
-            String refreshTimeStr = sharedPref.getString(context.getResources().getString(R.string.update_interval), null );
-
-            if( refreshTimeStr!=null && !refreshTimeStr.isEmpty() ){
-                refreshTime = Integer.parseInt( refreshTimeStr );
+            int refreshTime = 5; // In minutes
+            String refreshTimeStr = sharedPref.getString(context.getResources().getString(R.string.update_interval), null);
+            if (refreshTimeStr != null && !refreshTimeStr.isEmpty()) {
+                int userTime = Integer.parseInt(refreshTimeStr);
+                if(userTime > 0 && userTime <= 10080) {
+                    refreshTime = userTime;
+                }
             }
-
-            alarmManager.setInexactRepeating(MainActivity.AlarmType, SystemClock.elapsedRealtime() + refreshTime*1000, MainActivity.TIME_SEC_MILLIS, pendingIntent);
+            alarmManager.setInexactRepeating(MainActivity.AlarmType, SystemClock.elapsedRealtime() + 5000, refreshTime * 1000 * 60, pendingIntent);
         } else {
             alarmManager.cancel(pendingIntent);
         }
