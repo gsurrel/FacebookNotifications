@@ -7,6 +7,15 @@
 		android:key="@string/enable_notification_synchro"
 		android:title="@string/enable_notification_synchro"/>
 
+	<EditTextPreference
+		android:title="@string/update_interval"
+        android:dialogTitle="@string/enter_seconds"
+		android:summary="@string/update_interval_summary"
+		android:key="@string/update_interval"
+		android:defaultValue="5"
+		android:inputType="number"
+		/>
+
 	<PreferenceCategory
 		android:key="@string/friends"
 		android:title="@string/friends">

@@ -21,5 +21,8 @@
     <string name="notification_category_activate">Activate this category</string>
     <string name="notification_sound">Notification sound</string>
     <string name="notification_sound_choice">Choose notification sound</string>
+    <string name="update_interval">Update Interval</string>
+    <string name="enter_seconds">Enter time in seconds</string>
+    <string name="update_interval_summary">Time to check for notifications every selected seconds</string>
 
 </resources>
