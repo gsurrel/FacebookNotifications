@@ -1,12 +1,15 @@
-# Facebook Notifications
+# Notifications for Facebook
 
 Small Android app for getting notified (friends, messages and notifications) while being privacy and battery friendly. It doesn't require the Facebook Platform to be turned on.
 
 [Direct link to release .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-release.apk) and [link to debug .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-debug.apk).
 
-![Facebook Notifications logo image](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/app/src/main/ic_launcher-web.png)
+![Notifications for Facebook logo image](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/app/src/main/ic_launcher-web.png)
 
 ## Changelog
+
+* _1.6.3_
+   *  Made app Play Store compliant
 
 * _1.6.2_
    *  Custom update time added in the settings
