@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Notifications pour Facebook</string>
+	<string name="app_name">Notifications pour Facebook</string>
 
-    <string name="request_pending">Requête en cours</string>
-    <string name="could_not_get_notifications">Impossible de récupérer les notifications</string>
-    <string name="maybe_logged_out">Vous être peut être déconnecté de Facebook</string>
-    <string name="you_have">Vous avez</string>
-    <string name="new_friend_requests">demande(s) d\'amitié</string>
-    <string name="new_messages">nouveau(x) messages(s)</string>
-    <string name="new_notifications">nouvelle(s) notification(s)</string>
-    <string name="new_friend_requests_short">demande(s)</string>
-    <string name="new_messages_short">message(s)</string>
-    <string name="new_notifications_short">notifications(s)</string>
-    <string name="friends">Amis</string>
-    <string name="messages">Messages</string>
-    <string name="notifications">Notifications</string>
+	<string name="request_pending">Requête en cours</string>
+	<string name="could_not_get_notifications">Impossible de récupérer les notifications</string>
+	<string name="maybe_logged_out">Vous être peut être déconnecté de Facebook</string>
+	<string name="you_have">Vous avez</string>
+	<string name="new_friend_requests">demande(s) d\'amitié</string>
+	<string name="new_messages">nouveau(x) messages(s)</string>
+	<string name="new_notifications">nouvelle(s) notification(s)</string>
+	<string name="new_friend_requests_short">demande(s)</string>
+	<string name="new_messages_short">message(s)</string>
+	<string name="new_notifications_short">notifications(s)</string>
+	<string name="friends">Amis</string>
+	<string name="messages">Messages</string>
+	<string name="notifications">Notifications</string>
 
-    <string name="settings">Préférences</string>
-    <string name="enable_notification_synchro">Activer la synchronisation</string>
-    <string name="notification_category_activate">Activer cette catégorie</string>
-    <string name="notification_sound">Notifications sonores</string>
-    <string name="notification_sound_choice">Son de notification</string>
-    <string name="update_interval">Fréquence de mise à jour</string>
-    <string name="enter_minutes">Délai de mise à jour (en minutes)</string>
-    <string name="update_interval_summary">Vérifier les notifications environ toutes les … minutes, de une minute à une semaine</string>
+	<string name="settings">Préférences</string>
+	<string name="enable_notification_synchro">Activer la synchronisation</string>
+	<string name="notification_category_activate">Activer cette catégorie</string>
+	<string name="notification_sound">Notifications sonores</string>
+	<string name="notification_sound_choice">Son de notification</string>
+	<string name="update_interval">Fréquence de mise à jour</string>
+	<string name="enter_minutes">Délai de mise à jour (en minutes)</string>
+	<string name="update_interval_summary">Vérifier les notifications environ toutes les … minutes, de une minute à une semaine</string>
+	<string name="notification_vibrate_choice">Style de vibration</string>
+
+	<string name="vibrate_none">Sans vibration</string>
+	<string name="vibrate_short">Vibration normale</string>
+	<string name="vibrate_long">Vibration forte</string>
+	<string name="vibrate_double">Double vibration</string>
+	<string name="vibrate_double_long">Double vibration forte</string>
 
 </resources>

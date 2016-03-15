@@ -8,14 +8,18 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.6.5_
+   * Added vibration control
+   * Settings panel disabled irrelevant features
+
 * _1.6.3_
-   *  Made app Play Store compliant
+   * Made app Play Store compliant
 
 * _1.6.2_
-   *  Custom update time added in the settings
+   * Custom update time added in the settings
 
 * _1.6.1_
-   *  Simplified preferences page, allowing to disable sound notification by selecting the "None" sound
+   * Simplified preferences page, allowing to disable sound notification by selecting the "None" sound
 
 * _1.6.0_
     * Added sound notification

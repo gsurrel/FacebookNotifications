@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<string-array name="notification_vibrate_entries">
+		<item>@string/vibrate_none</item>
+		<item>@string/vibrate_short</item>
+		<item>@string/vibrate_long</item>
+		<item>@string/vibrate_double</item>
+		<item>@string/vibrate_double_long</item>
+	</string-array>
+	<string-array name="notification_vibrate_entriesValues"
+	              tools:ignore="MissingTranslation">
+		<item>vibrate_none</item>
+		<item>vibrate_short</item>
+		<item>vibrate_long</item>
+		<item>vibrate_double</item>
+		<item>vibrate_double_long</item>
+	</string-array>
+</resources>

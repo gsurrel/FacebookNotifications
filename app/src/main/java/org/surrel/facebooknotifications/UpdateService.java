@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -29,8 +28,6 @@ import android.webkit.WebViewClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Map;
 
 public class UpdateService extends Service {
     private static final int NOTIF_BASE = 0;
@@ -183,7 +180,6 @@ public class UpdateService extends Service {
                                     .setContentTitle(getString(R.string.app_name))
                                     .setContentText(notifText)
                                     .setPriority(Notification.PRIORITY_DEFAULT)
-                                    .setVibrate(new long[]{0, 200})
                                     .setAutoCancel(true)
                                     .setLights(Color.BLUE, 1000, 8000);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -202,10 +198,23 @@ public class UpdateService extends Service {
                                 Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
                             }
+                            switch (sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short")) {
+                                case "vibrate_short":
+                                    mBuilder.setVibrate(new long[]{0, 200});
+                                    break;
+                                case "vibrate_long":
+                                    mBuilder.setVibrate(new long[]{0, 400});
+                                    break;
+                                case "vibrate_double":
+                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                    break;
+                                case "vibrate_double_long":
+                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                    break;
+                            }
                         }
                         if (nbMessages > 0) {
-                            mBuilder.setPriority(Notification.PRIORITY_HIGH)
-                                    .setVibrate(new long[]{0, 300, 100, 300});
+                            mBuilder.setPriority(Notification.PRIORITY_HIGH);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
                             }
@@ -215,6 +224,20 @@ public class UpdateService extends Service {
                                 Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
                             }
+                            switch (sharedPreferences.getString("notification_vibrate_choice_messages", "vibrate_double")) {
+                                case "vibrate_short":
+                                    mBuilder.setVibrate(new long[]{0, 200});
+                                    break;
+                                case "vibrate_long":
+                                    mBuilder.setVibrate(new long[]{0, 400});
+                                    break;
+                                case "vibrate_double":
+                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                    break;
+                                case "vibrate_double_long":
+                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                    break;
+                            }
                         }
                         if (nbNotifications > 0) {
                             resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
@@ -222,6 +245,20 @@ public class UpdateService extends Service {
                             if (str != null) {
                                 Uri uri = Uri.parse(str);
                                 mBuilder.setSound(uri);
+                            }
+                            switch (sharedPreferences.getString("notification_vibrate_choice_notifications", "vibrate_short")) {
+                                case "vibrate_short":
+                                    mBuilder.setVibrate(new long[]{0, 200});
+                                    break;
+                                case "vibrate_long":
+                                    mBuilder.setVibrate(new long[]{0, 400});
+                                    break;
+                                case "vibrate_double":
+                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                    break;
+                                case "vibrate_double_long":
+                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                    break;
                             }
                         }
                     } else {

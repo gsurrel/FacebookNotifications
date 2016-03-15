@@ -4,19 +4,21 @@
 
 	<CheckBoxPreference
 		android:defaultValue="true"
-		android:key="@string/enable_notification_synchro"
+		android:key="enable_notification_synchro"
 		android:title="@string/enable_notification_synchro"/>
 
 	<EditTextPreference
+		android:dependency="enable_notification_synchro"
 		android:defaultValue="5"
 		android:dialogTitle="@string/enter_minutes"
 		android:inputType="number"
-		android:key="@string/update_interval"
+		android:key="update_interval"
 		android:summary="@string/update_interval_summary"
 		android:title="@string/update_interval"
 		/>
 
 	<PreferenceCategory
+		android:dependency="enable_notification_synchro"
 		android:key="@string/friends"
 		android:title="@string/friends">
 		<CheckBoxPreference
@@ -24,12 +26,22 @@
 			android:key="notification_friends"
 			android:title="@string/notification_category_activate"/>
 		<RingtonePreference
+			android:dependency="notification_friends"
 			android:key="notification_sound_choice_friends"
 			android:ringtoneType="notification"
 			android:title="@string/notification_sound_choice"/>
+		<ListPreference
+			android:dependency="notification_friends"
+			android:key="notification_vibrate_choice_friends"
+			android:title="@string/notification_vibrate_choice"
+			android:dialogTitle="@string/notification_vibrate_choice"
+			android:entries="@array/notification_vibrate_entries"
+			android:entryValues="@array/notification_vibrate_entriesValues"
+			android:defaultValue="vibrate_short" />
 	</PreferenceCategory>
 
 	<PreferenceCategory
+		android:dependency="enable_notification_synchro"
 		android:key="@string/messages"
 		android:title="@string/messages">
 		<CheckBoxPreference
@@ -40,9 +52,18 @@
 			android:key="notification_sound_choice_messages"
 			android:ringtoneType="notification"
 			android:title="@string/notification_sound_choice"/>
+		<ListPreference
+			android:dependency="notification_messages"
+			android:key="notification_vibrate_choice_messages"
+			android:title="@string/notification_vibrate_choice"
+			android:dialogTitle="@string/notification_vibrate_choice"
+			android:entries="@array/notification_vibrate_entries"
+			android:entryValues="@array/notification_vibrate_entriesValues"
+			android:defaultValue="vibrate_double" />
 	</PreferenceCategory>
 
 	<PreferenceCategory
+		android:dependency="enable_notification_synchro"
 		android:key="@string/notifications"
 		android:title="@string/notifications">
 		<CheckBoxPreference
@@ -53,6 +74,14 @@
 			android:key="notification_sound_choice_notifications"
 			android:ringtoneType="notification"
 			android:title="@string/notification_sound_choice"/>
+		<ListPreference
+			android:dependency="notification_notifications"
+			android:key="notification_vibrate_choice_notifications"
+			android:title="@string/notification_vibrate_choice"
+			android:dialogTitle="@string/notification_vibrate_choice"
+			android:entries="@array/notification_vibrate_entries"
+			android:entryValues="@array/notification_vibrate_entriesValues"
+			android:defaultValue="vibrate_short" />
 	</PreferenceCategory>
 
 </PreferenceScreen>

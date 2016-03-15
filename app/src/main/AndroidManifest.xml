@@ -20,6 +20,37 @@
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW"/>
+
+				<category android:name="android.intent.category.DEFAULT"/>
+				<category android:name="android.intent.category.BROWSABLE"/>
+
+				<data
+					android:host="m.facebook.com"
+					android:scheme="https"/>
+				<data
+					android:host="m.fb.com"
+					android:scheme="https"/>
+				<data
+					android:host="touch.facebook.com"
+					android:scheme="https"/>
+				<data
+					android:host="touch.fb.com"
+					android:scheme="https"/>
+				<data
+					android:host="facebook.com"
+					android:scheme="https"/>
+				<data
+					android:host="fb.com"
+					android:scheme="https"/>
+				<data
+					android:host="www.facebook.com"
+					android:scheme="https"/>
+				<data
+					android:host="www.fb.com"
+					android:scheme="https"/>
+			</intent-filter>
 		</activity>
 
 		<receiver
