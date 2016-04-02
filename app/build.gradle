@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    //compile SDK must be lower than 23 because in API level 23 old notification is removed, compelling to use support library.
+    compileSdkVersion 21
     buildToolsVersion '23.0.2'
     defaultConfig {
         applicationId "org.surrel.facebooknotifications"
-        minSdkVersion 17
-        targetSdkVersion 23
+        minSdkVersion 8
+        targetSdkVersion 24
         versionCode 8
-        versionName '1.6.5'
+        versionName '1.7.0'
     }
     buildTypes {
         release {
