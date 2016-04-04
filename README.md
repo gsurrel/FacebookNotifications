@@ -8,6 +8,9 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.7.0_
+   * Added compatibility to older devices
+
 * _1.6.5_
    * Added vibration control
    * Settings panel disabled irrelevant features
