@@ -1,6 +1,7 @@
 package org.surrel.facebooknotifications;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,6 +10,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -87,6 +89,78 @@ public class UpdateService extends Service {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
+
+
+
+
+
+
+    @SuppressWarnings("deprecation")
+    void legacyNotification(NotificationManager mNotificationManager, int icon, String title, String text, Intent intent, int notifType ){
+
+        Notification msg = new Notification( icon,
+                title,
+                System.currentTimeMillis());
+
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(getApplicationContext(),
+                        0, intent,
+                        0);
+
+        String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+        if (str != null) {
+            msg.sound = Uri.parse(str);
+        }
+
+        msg.flags |= Notification.FLAG_AUTO_CANCEL;
+        msg.setLatestEventInfo( getApplicationContext(),
+                title, text, pendingIntent);
+        mNotificationManager.notify(notifType, msg);
+
+    }
+
+
+
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    void newStyleNotification(NotificationManager mNotificationManager, int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType ){
+
+        Notification.Builder mBuilder =
+                new Notification.Builder(getApplicationContext())
+                        .setSmallIcon(smallIcon)
+                        .setLargeIcon(largeIcon)
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setPriority(priority)
+                        .setAutoCancel(true);
+
+        if(notifType == NOTIF_UNIFIED)
+            mBuilder.setLights(Color.BLUE, 1000, 8000);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setCategory(Notification.CATEGORY_SOCIAL)
+                    .setVisibility(Notification.VISIBILITY_PRIVATE);
+        }
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+        if (str != null) {
+            Uri uri = Uri.parse(str);
+            mBuilder.setSound(uri);
+        }
+
+        mNotificationManager.notify(notifType, mBuilder.build());
+
+    }
+
+
+
     @SuppressWarnings("unused")
     @JavascriptInterface
     public void processJSON(String jsonStr) {
@@ -96,32 +170,16 @@ public class UpdateService extends Service {
             NotificationManager mNotificationManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (json.getBoolean("login")) {
-                Notification.Builder mBuilder =
-                        new Notification.Builder(getApplicationContext())
-                                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                .setContentTitle(getString(R.string.could_not_get_notifications))
-                                .setContentText(getString(R.string.maybe_logged_out))
-                                .setPriority(Notification.PRIORITY_LOW)
-                                .setAutoCancel(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mBuilder.setCategory(Notification.CATEGORY_SOCIAL)
-                            .setVisibility(Notification.VISIBILITY_PRIVATE);
-                }
+
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setContentIntent(resultPendingIntent);
 
-                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                if (str != null) {
-                    Uri uri = Uri.parse(str);
-                    mBuilder.setSound(uri);
+                if( Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN ){
+                    legacyNotification( mNotificationManager, android.R.drawable.ic_dialog_alert, getString(R.string.could_not_get_notifications), getString(R.string.maybe_logged_out), resultIntent, NOTIF_LOGIN );
+                }else{
+                    newStyleNotification( mNotificationManager, android.R.drawable.ic_dialog_alert, BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher), getString(R.string.could_not_get_notifications), getString(R.string.maybe_logged_out), Notification.PRIORITY_LOW, resultIntent, NOTIF_LOGIN );
                 }
 
-                mNotificationManager.notify(NOTIF_LOGIN, mBuilder.build());
+
             } else {
                 // If we had a connection problem but now it's OK, remove the "login" notification
                 mNotificationManager.cancel(NOTIF_LOGIN);
@@ -172,147 +230,156 @@ public class UpdateService extends Service {
                                         : getString(R.string.new_notifications));
                     }
 
-                    // Basic common notification, will be altered for more important states (messages)
-                    Notification.Builder mBuilder =
-                            new Notification.Builder(this)
-                                    .setSmallIcon(R.drawable.ic_notification)
-                                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                                    .setContentTitle(getString(R.string.app_name))
-                                    .setContentText(notifText)
-                                    .setPriority(Notification.PRIORITY_DEFAULT)
-                                    .setAutoCancel(true)
-                                    .setLights(Color.BLUE, 1000, 8000);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        mBuilder.setCategory(Notification.CATEGORY_SOCIAL)
-                                .setVisibility(Notification.VISIBILITY_PRIVATE);
-                    }
-
                     Intent resultIntent = new Intent(Intent.ACTION_VIEW);
                     resultIntent.setData(Uri.parse("https://m.facebook.com/"));
-                    if (!multipleCategories) {
-                        // If only one category, make the notification more specific
-                        if (nbFriends > 0) {
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
-                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
+
+
+                    if( Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN ){
+
+                        legacyNotification( mNotificationManager, R.drawable.ic_notification, getString(R.string.app_name), notifText, resultIntent, NOTIF_LOGIN );
+
+                    }else {
+
+                        // Basic common notification, will be altered for more important states (messages)
+                        Notification.Builder mBuilder =
+                                new Notification.Builder(this)
+                                        .setSmallIcon(R.drawable.ic_notification)
+                                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                                        .setContentTitle(getString(R.string.app_name))
+                                        .setContentText(notifText)
+                                        .setPriority(Notification.PRIORITY_DEFAULT)
+                                        .setAutoCancel(true)
+                                        .setLights(Color.BLUE, 1000, 8000);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mBuilder.setCategory(Notification.CATEGORY_SOCIAL)
+                                    .setVisibility(Notification.VISIBILITY_PRIVATE);
+                        }
+
+
+                        if (!multipleCategories) {
+                            // If only one category, make the notification more specific
+                            if (nbFriends > 0) {
+                                resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                                String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+
+                                switch (sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short")) {
+                                    case "vibrate_short":
+                                        mBuilder.setVibrate(new long[]{0, 200});
+                                        break;
+                                    case "vibrate_long":
+                                        mBuilder.setVibrate(new long[]{0, 400});
+                                        break;
+                                    case "vibrate_double":
+                                        mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                        break;
+                                    case "vibrate_double_long":
+                                        mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                        break;
+                                }
                             }
-                            switch (sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short")) {
-                                case "vibrate_short":
-                                    mBuilder.setVibrate(new long[]{0, 200});
-                                    break;
-                                case "vibrate_long":
-                                    mBuilder.setVibrate(new long[]{0, 400});
-                                    break;
-                                case "vibrate_double":
-                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
-                                    break;
-                                case "vibrate_double_long":
-                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
-                                    break;
+                            if (nbMessages > 0) {
+                                mBuilder.setPriority(Notification.PRIORITY_HIGH);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
+                                }
+                                resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                                String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                                if (str != null) {
+                                    Uri uri = Uri.parse(str);
+                                    mBuilder.setSound(uri);
+                                }
+                                switch (sharedPreferences.getString("notification_vibrate_choice_messages", "vibrate_double")) {
+                                    case "vibrate_short":
+                                        mBuilder.setVibrate(new long[]{0, 200});
+                                        break;
+                                    case "vibrate_long":
+                                        mBuilder.setVibrate(new long[]{0, 400});
+                                        break;
+                                    case "vibrate_double":
+                                        mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                        break;
+                                    case "vibrate_double_long":
+                                        mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                        break;
+                                }
+                            }
+                            if (nbNotifications > 0) {
+                                resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                                if (str != null) {
+                                    Uri uri = Uri.parse(str);
+                                    mBuilder.setSound(uri);
+                                }
+                                switch (sharedPreferences.getString("notification_vibrate_choice_notifications", "vibrate_short")) {
+                                    case "vibrate_short":
+                                        mBuilder.setVibrate(new long[]{0, 200});
+                                        break;
+                                    case "vibrate_long":
+                                        mBuilder.setVibrate(new long[]{0, 400});
+                                        break;
+                                    case "vibrate_double":
+                                        mBuilder.setVibrate(new long[]{0, 200, 200, 200});
+                                        break;
+                                    case "vibrate_double_long":
+                                        mBuilder.setVibrate(new long[]{0, 400, 300, 400});
+                                        break;
+                                }
+                            }
+                        } else {
+                            // If it's a multicategory notification, create the BigView and set the sound by priority: messages > notif > requests
+                            mBuilder.setStyle(new Notification.BigTextStyle().bigText(notifText));
+                            if (nbFriends > 0) {
+                                Intent btnIntent = (Intent) resultIntent.clone();
+                                btnIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                                sBuilder.addNextIntent(btnIntent);
+                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                mBuilder.addAction(R.drawable.ic_menu_invite,
+                                        getString(R.string.friends), pi);
+                                String str = sharedPreferences.getString("notification_sound_choice_friends", null);
+                                if (str != null) {
+                                    Uri uri = Uri.parse(str);
+                                    mBuilder.setSound(uri);
+                                }
+                            }
+                            if (nbNotifications > 0) {
+                                Intent btnIntent = (Intent) resultIntent.clone();
+                                btnIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                                sBuilder.addNextIntent(btnIntent);
+                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                mBuilder.addAction(R.drawable.ic_menu_mapmode,
+                                        getString(R.string.notifications), pi);
+                                String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
+                                if (str != null) {
+                                    Uri uri = Uri.parse(str);
+                                    mBuilder.setSound(uri);
+                                }
+                            }
+                            if (nbMessages > 0) {
+                                Intent btnIntent = (Intent) resultIntent.clone();
+                                btnIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                                sBuilder.addNextIntent(btnIntent);
+                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                mBuilder.addAction(R.drawable.ic_menu_start_conversation,
+                                        getString(R.string.messages), pi);
+                                String str = sharedPreferences.getString("notification_sound_choice_messages", null);
+                                if (str != null) {
+                                    Uri uri = Uri.parse(str);
+                                    mBuilder.setSound(uri);
+                                }
                             }
                         }
-                        if (nbMessages > 0) {
-                            mBuilder.setPriority(Notification.PRIORITY_HIGH);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-                            }
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
-                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
-                            }
-                            switch (sharedPreferences.getString("notification_vibrate_choice_messages", "vibrate_double")) {
-                                case "vibrate_short":
-                                    mBuilder.setVibrate(new long[]{0, 200});
-                                    break;
-                                case "vibrate_long":
-                                    mBuilder.setVibrate(new long[]{0, 400});
-                                    break;
-                                case "vibrate_double":
-                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
-                                    break;
-                                case "vibrate_double_long":
-                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
-                                    break;
-                            }
-                        }
-                        if (nbNotifications > 0) {
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
-                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
-                            }
-                            switch (sharedPreferences.getString("notification_vibrate_choice_notifications", "vibrate_short")) {
-                                case "vibrate_short":
-                                    mBuilder.setVibrate(new long[]{0, 200});
-                                    break;
-                                case "vibrate_long":
-                                    mBuilder.setVibrate(new long[]{0, 400});
-                                    break;
-                                case "vibrate_double":
-                                    mBuilder.setVibrate(new long[]{0, 200, 200, 200});
-                                    break;
-                                case "vibrate_double_long":
-                                    mBuilder.setVibrate(new long[]{0, 400, 300, 400});
-                                    break;
-                            }
-                        }
-                    } else {
-                        // If it's a multicategory notification, create the BigView and set the sound by priority: messages > notif > requests
-                        mBuilder.setStyle(new Notification.BigTextStyle().bigText(notifText));
-                        if (nbFriends > 0) {
-                            Intent btnIntent = (Intent) resultIntent.clone();
-                            btnIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
-                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                            sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.addAction(R.drawable.ic_menu_invite,
-                                    getString(R.string.friends), pi);
-                            String str = sharedPreferences.getString("notification_sound_choice_friends", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
-                            }
-                        }
-                        if (nbNotifications > 0) {
-                            Intent btnIntent = (Intent) resultIntent.clone();
-                            btnIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
-                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                            sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.addAction(R.drawable.ic_menu_mapmode,
-                                    getString(R.string.notifications), pi);
-                            String str = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
-                            }
-                        }
-                        if (nbMessages > 0) {
-                            Intent btnIntent = (Intent) resultIntent.clone();
-                            btnIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
-                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                            sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            mBuilder.addAction(R.drawable.ic_menu_start_conversation,
-                                    getString(R.string.messages), pi);
-                            String str = sharedPreferences.getString("notification_sound_choice_messages", null);
-                            if (str != null) {
-                                Uri uri = Uri.parse(str);
-                                mBuilder.setSound(uri);
-                            }
-                        }
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                        stackBuilder.addNextIntent(resultIntent);
+                        PendingIntent resultPendingIntent =
+                                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mBuilder.setContentIntent(resultPendingIntent);
+                        mNotificationManager.notify(NOTIF_UNIFIED, mBuilder.build());
+
                     }
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                    stackBuilder.addNextIntent(resultIntent);
-                    PendingIntent resultPendingIntent =
-                            stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    mBuilder.setContentIntent(resultPendingIntent);
-                    mNotificationManager.notify(NOTIF_UNIFIED, mBuilder.build());
+
                 } else {
                     Log.i("fbn.UpdateService", "Same number of events per categories, skipping notification");
                 }
