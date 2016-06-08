@@ -117,9 +117,6 @@ public class UpdateService extends Service {
                         .setPriority(priority)
                         .setAutoCancel(true);
 
-        if (notifType == NOTIF_UNIFIED)
-            mBuilder.setLights(Color.BLUE, 1000, 8000);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setCategory(Notification.CATEGORY_SOCIAL)
                     .setVisibility(Notification.VISIBILITY_PRIVATE);
@@ -224,17 +221,21 @@ public class UpdateService extends Service {
                     // Choose the right sound and vibration style according to category weight (notification < friend < message)
                     String soundURI = "";
                     long[] vibrationPattern = new long[]{0, 200};
+                    int[] rate = new int[]{0, 0};
                     if (nbNotifications > 0) {
                         soundURI = sharedPreferences.getString("notification_sound_choice_notifications", null);
                         vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_notifications", "vibrate_short"));
+                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_notifications", ""));
                     }
                     if (nbFriends > 0) {
                         soundURI = sharedPreferences.getString("notification_sound_choice_friends", null);
                         vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short"));
+                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_friends", ""));
                     }
                     if (nbMessages > 0) {
                         soundURI = sharedPreferences.getString("notification_sound_choice_messages", null);
                         vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_messages", "vibrate_double"));
+                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_messages", ""));
                     }
 
                     // Build the intent
@@ -281,6 +282,9 @@ public class UpdateService extends Service {
                                 notif.setCategory(Notification.CATEGORY_MESSAGE);
                             }
                         }
+
+                        // Set blinking
+                        notif.setLights(Color.BLUE, rate[0], rate[1]);
 
                         if (multipleCategories) {
                             // If it's a multicategory notification, create the BigView, display in the same order as Facebook
@@ -330,8 +334,20 @@ public class UpdateService extends Service {
         this.stopSelf();
     }
 
+    private int[] getBlinkRate(String pref) {
+        switch (pref) {
+            case "frenetic":
+                return new int[]{300, 200};
+            case "normal":
+                return new int[]{1000, 4000};
+            case "slow":
+            default:
+                return new int[]{1000, 8000};
+        }
+    }
+
     private long[] getPattern(String string) {
-        switch (sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short")) {
+        switch (sharedPreferences.getString(string, "vibrate_short")) {
             case "vibrate_short":
                 return new long[]{0, 200};
             case "vibrate_long":

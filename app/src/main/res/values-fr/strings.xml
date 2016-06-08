@@ -21,6 +21,8 @@
 	<string name="notification_category_activate">Activer cette catégorie</string>
 	<string name="notification_sound">Notifications sonores</string>
 	<string name="notification_sound_choice">Son de notification</string>
+	<string name="notification_blink_rate">Clignotement de la LED</string>
+	<string name="notification_blink_rate_choice">Vitesse de clignotement de la LED</string>
 	<string name="update_interval">Fréquence de mise à jour</string>
 	<string name="enter_minutes">Délai de mise à jour (en minutes)</string>
 	<string name="update_interval_summary">Vérifier les notifications environ toutes les … minutes, de une minute à une semaine</string>
@@ -32,4 +34,7 @@
 	<string name="vibrate_double">Double vibration</string>
 	<string name="vibrate_double_long">Double vibration forte</string>
 
+    <string name="blink_slow">Lent</string>
+    <string name="blink_normal">Normal</string>
+    <string name="blink_frenetic">Frénétique</string>
 </resources>

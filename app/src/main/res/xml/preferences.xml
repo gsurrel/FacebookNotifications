@@ -38,6 +38,14 @@
 			android:entries="@array/notification_vibrate_entries"
 			android:entryValues="@array/notification_vibrate_entriesValues"
 			android:defaultValue="vibrate_short" />
+		<ListPreference
+			android:dependency="notification_friends"
+			android:key="notification_blink_rate_friends"
+			android:title="@string/notification_blink_rate"
+			android:dialogTitle="@string/notification_blink_rate_choice"
+			android:entries="@array/notification_blink_rate_entries"
+			android:entryValues="@array/notification_blink_rate_entriesValues"
+			android:defaultValue="slow" />
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -49,6 +57,7 @@
 			android:key="notification_messages"
 			android:title="@string/notification_category_activate"/>
 		<RingtonePreference
+			android:dependency="notification_messages"
 			android:key="notification_sound_choice_messages"
 			android:ringtoneType="notification"
 			android:title="@string/notification_sound_choice"/>
@@ -60,6 +69,14 @@
 			android:entries="@array/notification_vibrate_entries"
 			android:entryValues="@array/notification_vibrate_entriesValues"
 			android:defaultValue="vibrate_double" />
+		<ListPreference
+			android:dependency="notification_messages"
+			android:key="notification_blink_rate_messages"
+			android:title="@string/notification_blink_rate"
+			android:dialogTitle="@string/notification_blink_rate_choice"
+			android:entries="@array/notification_blink_rate_entries"
+			android:entryValues="@array/notification_blink_rate_entriesValues"
+			android:defaultValue="slow" />
 	</PreferenceCategory>
 
 	<PreferenceCategory
@@ -71,6 +88,7 @@
 			android:key="notification_notifications"
 			android:title="@string/notification_category_activate"/>
 		<RingtonePreference
+			android:dependency="notification_notifications"
 			android:key="notification_sound_choice_notifications"
 			android:ringtoneType="notification"
 			android:title="@string/notification_sound_choice"/>
@@ -82,6 +100,14 @@
 			android:entries="@array/notification_vibrate_entries"
 			android:entryValues="@array/notification_vibrate_entriesValues"
 			android:defaultValue="vibrate_short" />
+		<ListPreference
+			android:dependency="notification_notifications"
+			android:key="notification_blink_rate_notifications"
+			android:title="@string/notification_blink_rate"
+			android:dialogTitle="@string/notification_blink_rate_choice"
+			android:entries="@array/notification_blink_rate_entries"
+			android:entryValues="@array/notification_blink_rate_entriesValues"
+			android:defaultValue="slow" />
 	</PreferenceCategory>
 
 </PreferenceScreen>

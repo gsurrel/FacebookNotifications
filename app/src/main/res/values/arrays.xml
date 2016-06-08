@@ -8,11 +8,22 @@
 		<item>@string/vibrate_double_long</item>
 	</string-array>
 	<string-array name="notification_vibrate_entriesValues"
-	              tools:ignore="MissingTranslation">
+		tools:ignore="MissingTranslation">
 		<item>vibrate_none</item>
 		<item>vibrate_short</item>
 		<item>vibrate_long</item>
 		<item>vibrate_double</item>
 		<item>vibrate_double_long</item>
+	</string-array>
+	<string-array name="notification_blink_rate_entries">
+		<item>@string/blink_slow</item>
+		<item>@string/blink_normal</item>
+		<item>@string/blink_frenetic</item>
+	</string-array>
+	<string-array name="notification_blink_rate_entriesValues"
+		tools:ignore="MissingTranslation">
+		<item>slow</item>
+		<item>normal</item>
+		<item>frenetic</item>
 	</string-array>
 </resources>
