@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
+		android:id="@+id/menu_item_share"
+		android:title="@string/share"
+		android:showAsAction="ifRoom"
+		android:actionProviderClass="android.widget.ShareActionProvider"
+		/>
+	<item
 		android:id="@+id/action_settings"
 		android:title="@string/settings"
+		android:showAsAction="never"
 		/>
 </menu>

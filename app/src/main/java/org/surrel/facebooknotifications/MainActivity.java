@@ -10,11 +10,14 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ShareActionProvider;
 
 public class MainActivity extends Activity {
     public static final int AlarmType = AlarmManager.ELAPSED_REALTIME_WAKEUP;
 
     private WebView webview;
+    private ShareActionProvider mShareActionProvider;
+    private Intent sendIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +35,19 @@ public class MainActivity extends Activity {
 
         WakeupManager.updateNotificationSystem(this);
 
+        sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+
         webview = new WebView(this);
         webview.setWebViewClient(new WebViewClient());
         webview.loadData("<h1>" + getString(R.string.request_pending) + "</h1>", "text/html", "UTF-8");
-        webview.setWebViewClient(new WebViewClient());
+        webview.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                updateSendIntent();
+            }
+        });
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(false);
         webSettings.setUserAgentString(getString(R.string.app_name));
@@ -63,6 +75,9 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
+        updateSendIntent();
         return true;
     }
 
@@ -76,6 +91,11 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    protected boolean updateSendIntent() {
+        sendIntent.putExtra(Intent.EXTRA_TEXT, webview.getUrl());
+        mShareActionProvider.setShareIntent(sendIntent);
+        return false;
+    }
     @Override
     public void onPause() {
         super.onPause();

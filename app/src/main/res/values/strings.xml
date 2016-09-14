@@ -40,4 +40,7 @@
 	<string name="blink_slow">Slow</string>
 	<string name="blink_normal">Normal</string>
 	<string name="blink_frenetic">Frenetic</string>
+
+	<string name="share">Share ...</string>
+	<string name="send_to">Send using</string>
 </resources>
