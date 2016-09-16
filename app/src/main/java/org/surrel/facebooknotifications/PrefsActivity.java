@@ -21,8 +21,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
 
         Log.d("fbn.PrefsActivity", key);
 
-        if (key.equals(getResources().getString(R.string.enable_notification_synchro))
-                || key.equals(getResources().getString(R.string.update_interval))) {
+        if (key.equals("enable_notification_synchro")
+                || key.equals("update_interval")) {
             Log.d("fbn.PrefsActivity", "Calling WakeupManager");
             WakeupManager.updateNotificationSystem(this);
         }
