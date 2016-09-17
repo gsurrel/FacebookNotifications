@@ -1,3 +1,7 @@
+# This is a fork of the original app
+This fork of the original repository contains my changes that include a few bugfixes and a possibility to share content to other applications. I have requested that they be merged upstream. See below.
+Here is [link to debug version of .apk file containing my patches](https://raw.githubusercontent.com/hirvinen/FacebookNotifications/master/FacebookNotifications-debug.apk). It is fully functional but is only signed with a temporary debug key, so the original application must be removed before installing this version.
+
 # Notifications for Facebook
 
 Small Android app for getting notified (friends, messages and notifications) while being privacy and battery friendly. It doesn't require the Facebook Platform to be turned on.
