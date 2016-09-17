@@ -10,6 +10,7 @@ android {
         targetSdkVersion 24
         versionCode 10
         versionName '1.8.0'
+        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
         release {
