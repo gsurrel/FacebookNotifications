@@ -12,6 +12,9 @@ import android.util.Log;
 public class WakeupManager {
     public static final String ENABLE_NOTIFICATION_SYNCHRO = "enable_notification_synchro";
     public static final String UPDATE_INTERVAL = "update_interval";
+    public static final int DEFAULT_UPDATE_INTERVAL = 15;
+    public static final int MIN_UPDATE_INTERVAL = 1;
+    public static final int MAX_UPDATE_INTERVAL = 10080;
 
     public static void updateNotificationSystem(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

@@ -17,6 +17,12 @@
 		android:title="@string/update_interval"
 		/>
 
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="show_share_button"
+		android:title="@string/show_share_button"
+		/>
+
 	<PreferenceCategory
 		android:dependency="enable_notification_synchro"
 		android:key="@string/friends"

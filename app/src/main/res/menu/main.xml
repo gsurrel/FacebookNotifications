@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item
-		android:id="@+id/menu_item_share"
+		android:id="@+id/menu_action_share"
 		android:title="@string/share"
-		android:showAsAction="ifRoom"
 		android:actionProviderClass="android.widget.ShareActionProvider"
+		android:showAsAction="always"
+		android:visible="false"
 		/>
 	<item
-		android:id="@+id/action_settings"
+		android:id="@+id/menu_item_share"
+		android:title="@string/share"
+		android:actionProviderClass="android.widget.ShareActionProvider"
+		android:showAsAction="never"
+		android:visible="true"
+		/>
+	<item
+		android:id="@+id/menu_item_settings"
 		android:title="@string/settings"
 		android:showAsAction="never"
 		/>
