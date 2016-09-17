@@ -26,6 +26,9 @@
 	<string name="update_interval">Update interval</string>
 	<string name="enter_minutes">Approximate update time (in minutes)</string>
 	<string name="update_interval_summary">Check for notifications every … minutes, from one minute to one week</string>
+	<string name="update_interval_using_default">Invalid update interval, using default value: </string>
+	<string name="update_interval_using_min">Update interval too short, using minimum value: </string>
+	<string name="update_interval_using_max">Update interval too long, using maximum value: </string>
 	<string name="notification_vibrate_choice">Vibration style</string>
 
 	<string name="vibrate_none">No vibration</string>

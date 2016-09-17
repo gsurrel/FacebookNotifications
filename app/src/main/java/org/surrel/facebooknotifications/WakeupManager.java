@@ -10,23 +10,19 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class WakeupManager {
+    public static final String ENABLE_NOTIFICATION_SYNCHRO = "enable_notification_synchro";
+    public static final String UPDATE_INTERVAL = "update_interval";
+
     public static void updateNotificationSystem(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intentForService = new Intent(context, UpdateService.class);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intentForService, 0);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean notifications = sharedPref.getBoolean(context.getString(R.string.enable_notification_synchro), true);
+        boolean notifications = sharedPref.getBoolean(ENABLE_NOTIFICATION_SYNCHRO, true);
         Log.i("fbn", "Notifications enabled? " + notifications);
         if (notifications) {
-            int refreshTime = 5; // In minutes
-            String refreshTimeStr = sharedPref.getString(context.getResources().getString(R.string.update_interval), null);
-            if (refreshTimeStr != null && !refreshTimeStr.isEmpty()) {
-                int userTime = Integer.parseInt(refreshTimeStr);
-                if(userTime > 0 && userTime <= 10080) {
-                    refreshTime = userTime;
-                }
-            }
-            alarmManager.setInexactRepeating(MainActivity.AlarmType, SystemClock.elapsedRealtime() + 5000, refreshTime * 1000 * 60, pendingIntent);
+            int updateInterval = Integer.parseInt(sharedPref.getString(UPDATE_INTERVAL, "15"));
+            alarmManager.setInexactRepeating(MainActivity.AlarmType, SystemClock.elapsedRealtime() + 5000, updateInterval * 1000 * 60, pendingIntent);
         } else {
             alarmManager.cancel(pendingIntent);
         }
