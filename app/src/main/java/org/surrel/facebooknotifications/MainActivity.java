@@ -115,9 +115,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SETTINGS_MENU) {
-            _dMsg("Returning from settings");
             if (resultCode == RESULT_REDRAW_MENU) {
-                _dMsg("Should redraw menu");
                 onPrepareOptionsMenu(mMenu);
             }
         }
