@@ -32,9 +32,45 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateService extends Service {
-    private static final int NOTIF_BASE = 0;
-    private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
-    private static final int NOTIF_UNIFIED = NOTIF_LOGIN + 1;
+    private static final int NOTIF_BASE     = 0;
+    private static final int NOTIF_LOGIN    = NOTIF_BASE + 1;
+    private static final int NOTIF_UNIFIED  = NOTIF_LOGIN + 1;
+
+    private static final String URL_HOME            = "https://m.facebook.com/";
+    private static final String URL_BOOKMARKS       = URL_HOME + "menu/bookmarks/";
+    private static final String URL_FRIEND_REQUESTS = URL_HOME + "friends/center/requests/";
+    private static final String URL_MESSAGES        = URL_HOME + "messages/";
+    private static final String URL_NOTIFICATIONS   = URL_HOME + "notifications.php";
+
+    private static final String PREF_FRIEND_REQUESTS    = "notification_friends";
+    private static final String PREF_MESSAGES           = "notification_messages";
+    private static final String PREF_NOTIFICATIONS      = "notification_notifications";
+
+    private static final String PREF_SOUND_FRIEND_REQUESTS  = "notification_sound_choice_friends";
+    private static final String PREF_SOUND_MESSAGES         = "notification_sound_choice_messages";
+    private static final String PREF_SOUND_NOTIFICATIONS    = "notification_sound_choice_notifications";
+
+    private static final String PREF_VIBRATE_FRIEND_REQUESTS  = "notification_vibrate_choice_friends";
+    private static final String PREF_VIBRATE_MESSAGES         = "notification_vibrate_choice_messages";
+    private static final String PREF_VIBRATE_NOTIFICATIONS    = "notification_vibrate_choice_notifications";
+
+    private static final String PREF_BLINK_FRIEND_REQUESTS  = "notification_blink_rate_choice_friends";
+    private static final String PREF_BLINK_MESSAGES         = "notification_blink_rate_choice_messages";
+    private static final String PREF_BLINK_NOTIFICATIONS    = "notification_blink_rate_choice_notifications";
+
+    private static final String KEY_VIBRATE_SHORT       = "vibrate_short";
+    private static final String KEY_VIBRATE_LONG        = "vibrate_long";
+    private static final String KEY_VIBRATE_DOUBLE      = "vibrate_double";
+    private static final String KEY_VIBRATE_DOUBLE_LONG = "vibrate_double_long";
+
+    private static final String KEY_BLINK_NORMAL    = "normal";
+    private static final String KEY_BLINK_SLOW      = "slow";
+    private static final String KEY_BLINK_FRENETIC  = "frenetic";
+
+    private static final String PREF_NOTIFICATION_COUNTERS              = "NotifCount";
+    private static final String PREF_NOTIFICATION_COUNT_FRIENDS         = "nbFriends";
+    private static final String PREF_NOTIFICATION_COUNT_MESSAGES        = "nbMessages";
+    private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS   = "nbNotifications";
 
     private WindowManager windowManager;
     private WebView webview;
@@ -71,7 +107,7 @@ public class UpdateService extends Service {
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(true);
         webSettings.setUserAgentString(getString(R.string.app_name));
-        webview.loadUrl("https://m.facebook.com/menu/bookmarks/");
+        webview.loadUrl(URL_BOOKMARKS);
 
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -173,19 +209,19 @@ public class UpdateService extends Service {
             } else {
                 // If we had a connection problem but now it's OK, remove the "login" notification
                 mNotificationManager.cancel(NOTIF_LOGIN);
-                int nbFriends = sharedPreferences.getBoolean("notification_friends", true) ? json.optInt("friends", 0) : 0;
-                int nbMessages = sharedPreferences.getBoolean("notification_messages", true) ? json.optInt("messages", 0) : 0;
-                int nbNotifications = sharedPreferences.getBoolean("notification_notifications", true) ? json.optInt("notifications", 0) : 0;
+                int nbFriends = sharedPreferences.getBoolean(PREF_FRIEND_REQUESTS, true) ? json.optInt("friends", 0) : 0;
+                int nbMessages = sharedPreferences.getBoolean(PREF_MESSAGES, true) ? json.optInt("messages", 0) : 0;
+                int nbNotifications = sharedPreferences.getBoolean(PREF_NOTIFICATIONS, true) ? json.optInt("notifications", 0) : 0;
 
-                SharedPreferences settings = getSharedPreferences("NotifCount", 0);
+                SharedPreferences settings = getSharedPreferences(PREF_NOTIFICATION_COUNTERS, 0);
 
                 // If we have no notifications, remove the existing one
                 Log.i("fbn.UpdateService", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
                 if (nbFriends + nbMessages + nbNotifications == 0) {
                     mNotificationManager.cancel(NOTIF_UNIFIED);
-                } else if (nbFriends != settings.getInt("nbFriends", 0)
-                        || nbMessages != settings.getInt("nbMessages", 0)
-                        || nbNotifications != settings.getInt("nbNotifications", 0)) { // If the count is the same as before, change nothing
+                } else if (nbFriends != settings.getInt(PREF_NOTIFICATION_COUNT_FRIENDS, 0)
+                        || nbMessages != settings.getInt(PREF_NOTIFICATION_COUNT_MESSAGES, 0)
+                        || nbNotifications != settings.getInt(PREF_NOTIFICATION_COUNT_NOTIFICATIONS, 0)) { // If the count is the same as before, change nothing
 
                     // Build a notification
                     String notifText = getString(R.string.you_have);
@@ -223,34 +259,34 @@ public class UpdateService extends Service {
                     long[] vibrationPattern = new long[]{0, 200};
                     int[] rate = new int[]{0, 0};
                     if (nbNotifications > 0) {
-                        soundURI = sharedPreferences.getString("notification_sound_choice_notifications", null);
-                        vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_notifications", "vibrate_short"));
-                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_notifications", ""));
+                        soundURI = sharedPreferences.getString(PREF_SOUND_NOTIFICATIONS, null);
+                        vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_NOTIFICATIONS, KEY_VIBRATE_SHORT));
+                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_NOTIFICATIONS, ""));
                     }
                     if (nbFriends > 0) {
-                        soundURI = sharedPreferences.getString("notification_sound_choice_friends", null);
-                        vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_friends", "vibrate_short"));
-                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_friends", ""));
+                        soundURI = sharedPreferences.getString(PREF_SOUND_FRIEND_REQUESTS, null);
+                        vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_FRIEND_REQUESTS, KEY_VIBRATE_SHORT));
+                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_FRIEND_REQUESTS, ""));
                     }
                     if (nbMessages > 0) {
-                        soundURI = sharedPreferences.getString("notification_sound_choice_messages", null);
-                        vibrationPattern = getPattern(sharedPreferences.getString("notification_vibrate_choice_messages", "vibrate_double"));
-                        rate = getBlinkRate(sharedPreferences.getString("notification_blink_rate_messages", ""));
+                        soundURI = sharedPreferences.getString(PREF_SOUND_MESSAGES, null);
+                        vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_MESSAGES, KEY_VIBRATE_SHORT));
+                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_MESSAGES, ""));
                     }
 
                     // Build the intent
                     Intent resultIntent = new Intent(Intent.ACTION_VIEW);
-                    resultIntent.setData(Uri.parse("https://m.facebook.com/"));
+                    resultIntent.setData(Uri.parse(URL_HOME));
                     if (!multipleCategories) {
                         // If only one category, make the notification more specific
                         if (nbFriends > 0) {
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                            resultIntent.setData(Uri.parse(URL_FRIEND_REQUESTS));
                         }
                         if (nbMessages > 0) {
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                            resultIntent.setData(Uri.parse(URL_MESSAGES));
                         }
                         if (nbNotifications > 0) {
-                            resultIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                            resultIntent.setData(Uri.parse(URL_NOTIFICATIONS));
                         }
                     }
 
@@ -291,7 +327,7 @@ public class UpdateService extends Service {
                             notif.setStyle(new Notification.BigTextStyle().bigText(notifText));
                             if (nbFriends > 0) {
                                 Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse("https://m.facebook.com/friends/center/requests/"));
+                                btnIntent.setData(Uri.parse(URL_FRIEND_REQUESTS));
                                 TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                                 sBuilder.addNextIntent(btnIntent);
                                 PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -299,7 +335,7 @@ public class UpdateService extends Service {
                             }
                             if (nbMessages > 0) {
                                 Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse("https://m.facebook.com/messages/"));
+                                btnIntent.setData(Uri.parse(URL_MESSAGES));
                                 TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                                 sBuilder.addNextIntent(btnIntent);
                                 PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -307,7 +343,7 @@ public class UpdateService extends Service {
                             }
                             if (nbNotifications > 0) {
                                 Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse("https://m.facebook.com/notifications.php"));
+                                btnIntent.setData(Uri.parse(URL_NOTIFICATIONS));
                                 TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                                 sBuilder.addNextIntent(btnIntent);
                                 PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -323,9 +359,9 @@ public class UpdateService extends Service {
 
                 // Save in the settings the current count of notifs per type
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putInt("nbFriends", nbFriends);
-                editor.putInt("nbMessages", nbMessages);
-                editor.putInt("nbNotifications", nbNotifications);
+                editor.putInt(PREF_NOTIFICATION_COUNT_FRIENDS, nbFriends);
+                editor.putInt(PREF_NOTIFICATION_COUNT_MESSAGES, nbMessages);
+                editor.putInt(PREF_NOTIFICATION_COUNT_NOTIFICATIONS, nbNotifications);
                 editor.apply();
             }
         } catch (JSONException e) {
@@ -336,25 +372,25 @@ public class UpdateService extends Service {
 
     private int[] getBlinkRate(String pref) {
         switch (pref) {
-            case "frenetic":
+            case KEY_BLINK_FRENETIC:
                 return new int[]{300, 200};
-            case "normal":
+            case KEY_BLINK_NORMAL:
                 return new int[]{1000, 4000};
-            case "slow":
+            case KEY_BLINK_SLOW:
             default:
                 return new int[]{1000, 8000};
         }
     }
 
     private long[] getPattern(String string) {
-        switch (sharedPreferences.getString(string, "vibrate_short")) {
-            case "vibrate_short":
+        switch (sharedPreferences.getString(string, KEY_VIBRATE_SHORT)) {
+            case KEY_VIBRATE_SHORT:
                 return new long[]{0, 200};
-            case "vibrate_long":
+            case KEY_VIBRATE_LONG:
                 return new long[]{0, 400};
-            case "vibrate_double":
+            case KEY_VIBRATE_DOUBLE:
                 return new long[]{0, 200, 200, 200};
-            case "vibrate_double_long":
+            case KEY_VIBRATE_DOUBLE_LONG:
                 return new long[]{0, 400, 300, 400};
             default:
                 return new long[0];
