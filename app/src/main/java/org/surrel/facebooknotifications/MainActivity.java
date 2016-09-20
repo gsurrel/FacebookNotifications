@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
     public static final int SETTINGS_MENU = 0;
     public static final int RESULT_REDRAW_MENU = 2;
     public static final String SHOW_SHARE_BUTTON = "show_share_button";
+    public static final String FB_URL = "https://m.facebook.com";
 
     private WebView webview;
     private ShareActionProvider mShareActionProvider;
@@ -37,7 +38,7 @@ public class MainActivity extends Activity {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
-        String targetURL = "https://m.facebook.com/";
+        String targetURL = FB_URL;
 
         if (getIntent().getExtras() != null) {
             String url = getIntent().getExtras().getString("url", "");
