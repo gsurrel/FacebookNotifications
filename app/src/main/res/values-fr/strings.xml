@@ -19,13 +19,16 @@
 	<string name="settings">Préférences</string>
 	<string name="enable_notification_synchro">Activer la synchronisation</string>
 	<string name="notification_category_activate">Activer cette catégorie</string>
-	<string name="notification_sound">Notifications sonores</string>
+	<!--<string name="notification_sound">Notifications sonores</string>-->
 	<string name="notification_sound_choice">Son de notification</string>
 	<string name="notification_blink_rate">Clignotement de la LED</string>
 	<string name="notification_blink_rate_choice">Vitesse de clignotement de la LED</string>
 	<string name="update_interval">Fréquence de mise à jour</string>
 	<string name="enter_minutes">Délai de mise à jour (en minutes)</string>
 	<string name="update_interval_summary">Vérifier les notifications environ toutes les … minutes, de une minute à une semaine</string>
+	<string name="update_interval_using_default">Délai de mise à jour invalide, utilisation de la valeur par défaut: </string>
+	<string name="update_interval_using_min">Délai de mise à jour trop court, utilisation de la valeur minimale: </string>
+	<string name="update_interval_using_max">Délai de mise à jour trop long, utilisation de la valeur maximale: </string>
 	<string name="notification_vibrate_choice">Style de vibration</string>
 
 	<string name="vibrate_none">Sans vibration</string>
@@ -37,4 +40,7 @@
     <string name="blink_slow">Lent</string>
     <string name="blink_normal">Normal</string>
     <string name="blink_frenetic">Frénétique</string>
+
+	<string name="share">Partager…</string>
+	<string name="show_share_button">Afficher le bouton de partage</string>
 </resources>

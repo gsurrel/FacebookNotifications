@@ -19,7 +19,7 @@
 	<string name="settings">Settings</string>
 	<string name="enable_notification_synchro">Enable synchronization</string>
 	<string name="notification_category_activate">Activate this category</string>
-	<string name="notification_sound">Notification sound</string>
+	<!--<string name="notification_sound">Notification sound</string>-->
 	<string name="notification_sound_choice">Choose notification sound</string>
 	<string name="notification_blink_rate">LED blink rate</string>
 	<string name="notification_blink_rate_choice">Choose LED blink rate</string>
@@ -41,7 +41,6 @@
 	<string name="blink_normal">Normal</string>
 	<string name="blink_frenetic">Frenetic</string>
 
-	<string name="share">Share …</string>
-	<string name="send_to">Send using</string>
+	<string name="share">Share…</string>
 	<string name="show_share_button">Show share button in toolbar</string>
 </resources>

@@ -1,7 +1,6 @@
 package org.surrel.facebooknotifications;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
@@ -24,7 +23,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d("fbn.PrefsActivity", key);
-        switch(key) {
+        switch (key) {
             case WakeupManager.UPDATE_INTERVAL:
                 String newIntervalStr = sharedPreferences.getString(key, null);
                 int newInterval = WakeupManager.DEFAULT_UPDATE_INTERVAL;
@@ -38,7 +37,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                         updateIntervalSetting = true;
                         newInterval = WakeupManager.MAX_UPDATE_INTERVAL;
                         Toast.makeText(this, getString(R.string.update_interval_using_max) + newInterval, Toast.LENGTH_SHORT).show();
-                    } else if (newInterval < WakeupManager.MIN_UPDATE_INTERVAL) { 
+                    } else if (newInterval < WakeupManager.MIN_UPDATE_INTERVAL) {
                         updateIntervalSetting = true;
                         newInterval = WakeupManager.MIN_UPDATE_INTERVAL;
                         Toast.makeText(this, getString(R.string.update_interval_using_min) + newInterval, Toast.LENGTH_SHORT).show();

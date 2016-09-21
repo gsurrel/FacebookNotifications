@@ -3,8 +3,8 @@ package org.surrel.facebooknotifications;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.content.Intent;
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
     private Intent shareIntent;
     private SharedPreferences mPrefs;
     private Menu mMenu;
-    private MenuItem shareItem;
     private MenuItem shareAction;
 
     @Override
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
 
         String targetURL = FB_URL;
 
-        if (getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR1) {
             String url = getIntent().getExtras().getString("url", "");
             if (!"".equals(url)) {
                 targetURL = url;
@@ -90,10 +89,12 @@ public class MainActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        shareItem = menu.findItem(R.id.menu_item_share);
+        MenuItem shareItem = menu.findItem(R.id.menu_item_share);
         shareAction = menu.findItem(R.id.menu_action_share);
-        shareAction.setVisible(mPrefs.getBoolean(SHOW_SHARE_BUTTON, false));
-        mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            shareAction.setVisible(mPrefs.getBoolean(SHOW_SHARE_BUTTON, false));
+            mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
+        }
         updateShareIntent();
         mMenu = menu;
         return super.onCreateOptionsMenu(menu);
@@ -132,11 +133,13 @@ public class MainActivity extends Activity {
         }
     }
 
-    protected boolean updateShareIntent() {
+    protected void updateShareIntent() {
         shareIntent.putExtra(Intent.EXTRA_TEXT, webview.getUrl());
-        mShareActionProvider.setShareIntent(shareIntent);
-        return false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
     }
+
     @Override
     public void onPause() {
         super.onPause();

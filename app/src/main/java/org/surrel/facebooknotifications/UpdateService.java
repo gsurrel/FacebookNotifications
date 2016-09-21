@@ -74,7 +74,7 @@ public class UpdateService extends Service {
 
     private WindowManager windowManager;
     private WebView webview;
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -126,7 +126,7 @@ public class UpdateService extends Service {
     }
 
     @SuppressWarnings("deprecation")
-    Notification getLegacyNotification(int icon, String title, String text, Intent intent, int notifType, String soundURI, long[] vibrationPattern) {
+    private Notification getLegacyNotification(int icon, String title, String text, Intent intent, int notifType, String soundURI, long[] vibrationPattern) {
         Notification msg = new Notification(icon, title, System.currentTimeMillis());
         msg.vibrate = vibrationPattern;
 
@@ -143,7 +143,7 @@ public class UpdateService extends Service {
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    Notification.Builder getNewStyleNotification(int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType, String soundURI, long[] vibrationPattern) {
+    private Notification.Builder getNewStyleNotification(int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType, String soundURI, long[] vibrationPattern) {
         Notification.Builder mBuilder =
                 new Notification.Builder(getApplicationContext())
                         .setSmallIcon(smallIcon)

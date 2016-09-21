@@ -8,6 +8,11 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.9.0_ thanks to @hirvinen
+   * Fixed issues #18 & #20
+   * Cleaned and refactored code
+   * Added possibility to share the current page
+
 * _1.8.0_
    * Fixed custom vibration pattern bug
    * Added custom blinking pattern per category
