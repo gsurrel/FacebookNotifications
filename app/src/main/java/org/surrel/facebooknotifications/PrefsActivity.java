@@ -28,11 +28,15 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                 String newIntervalStr = sharedPreferences.getString(key, null);
                 int newInterval = WakeupManager.DEFAULT_UPDATE_INTERVAL;
                 boolean updateIntervalSetting = false;
+                try{
+                    newInterval = Integer.parseInt(newIntervalStr);
+                }catch (NumberFormatException e){
+                    newIntervalStr = null;
+                }
                 if (newIntervalStr == null || newIntervalStr.isEmpty() || newIntervalStr.matches("\\D")) {
                     updateIntervalSetting = true;
                     Toast.makeText(this, getString(R.string.update_interval_using_default) + newInterval, Toast.LENGTH_SHORT).show();
                 } else {
-                    newInterval = Integer.parseInt(newIntervalStr);
                     if (newInterval > WakeupManager.MAX_UPDATE_INTERVAL) {
                         updateIntervalSetting = true;
                         newInterval = WakeupManager.MAX_UPDATE_INTERVAL;

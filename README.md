@@ -8,6 +8,9 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.9.2_
+   * Fixed a crash on wrong user input
+
 * _1.9.1_
    * Hopefully fixed issues #19 & #21
 
