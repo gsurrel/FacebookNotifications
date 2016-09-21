@@ -8,6 +8,9 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.9.1_
+   * Hopefully fixed issues #19 & #21
+
 * _1.9.0_ thanks to @hirvinen
    * Fixed issues #18 & #20
    * Cleaned and refactored code
