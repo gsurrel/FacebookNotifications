@@ -49,11 +49,11 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                 }
                 if (updateIntervalSetting) {
                     updatePreference.setText(Integer.toString(newInterval));
-                    break;
                     // Above relies on a deprecated method to get preference object.
                     // Below doesn't need that, but the value shown in editor doesn't get updated before leaving preferences
                     // sharedPreferences.edit().putString(key, Integer.toString(newInterval)).apply();
                 }
+                break;
             case WakeupManager.ENABLE_NOTIFICATION_SYNCHRO:
                 Log.d("fbn.PrefsActivity", "Calling WakeupManager");
                 WakeupManager.updateNotificationSystem(this);

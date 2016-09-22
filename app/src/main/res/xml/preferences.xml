@@ -2,118 +2,125 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="enable_notification_synchro"
-		android:title="@string/enable_notification_synchro"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="enable_notification_synchro"
+        android:title="@string/enable_notification_synchro" />
 
-	<EditTextPreference
-		android:dependency="enable_notification_synchro"
-		android:defaultValue="5"
-		android:dialogTitle="@string/enter_minutes"
-		android:inputType="number"
-		android:key="update_interval"
-		android:summary="@string/update_interval_summary"
-		android:title="@string/update_interval"
-		/>
+    <EditTextPreference
+        android:defaultValue="5"
+        android:dependency="enable_notification_synchro"
+        android:dialogTitle="@string/enter_minutes"
+        android:inputType="number"
+        android:key="update_interval"
+        android:summary="@string/update_interval_summary"
+        android:title="@string/update_interval" />
 
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="show_share_button"
-		android:title="@string/show_share_button"
-		/>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="show_share_button"
+        android:title="@string/show_share_button" />
 
-	<PreferenceCategory
-		android:dependency="enable_notification_synchro"
-		android:key="@string/friends"
-		android:title="@string/friends">
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_friends"
-			android:title="@string/notification_category_activate"/>
-		<RingtonePreference
-			android:dependency="notification_friends"
-			android:key="notification_sound_choice_friends"
-			android:ringtoneType="notification"
-			android:title="@string/notification_sound_choice"/>
-		<ListPreference
-			android:dependency="notification_friends"
-			android:key="notification_vibrate_choice_friends"
-			android:title="@string/notification_vibrate_choice"
-			android:dialogTitle="@string/notification_vibrate_choice"
-			android:entries="@array/notification_vibrate_entries"
-			android:entryValues="@array/notification_vibrate_entriesValues"
-			android:defaultValue="vibrate_short" />
-		<ListPreference
-			android:dependency="notification_friends"
-			android:key="notification_blink_rate_friends"
-			android:title="@string/notification_blink_rate"
-			android:dialogTitle="@string/notification_blink_rate_choice"
-			android:entries="@array/notification_blink_rate_entries"
-			android:entryValues="@array/notification_blink_rate_entriesValues"
-			android:defaultValue="slow" />
-	</PreferenceCategory>
+    <PreferenceCategory
+        android:dependency="enable_notification_synchro"
+        android:key="@string/friends"
+        android:title="@string/friends">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_friends"
+            android:title="@string/notification_category_activate" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notification_friends"
+            android:key="notification_sound_choice_friends"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="@string/notification_sound_choice" />
+        <ListPreference
+            android:defaultValue="vibrate_short"
+            android:dependency="notification_friends"
+            android:dialogTitle="@string/notification_vibrate_choice"
+            android:entries="@array/notification_vibrate_entries"
+            android:entryValues="@array/notification_vibrate_entriesValues"
+            android:key="notification_vibrate_choice_friends"
+            android:title="@string/notification_vibrate_choice" />
+        <ListPreference
+            android:defaultValue="slow"
+            android:dependency="notification_friends"
+            android:dialogTitle="@string/notification_blink_rate_choice"
+            android:entries="@array/notification_blink_rate_entries"
+            android:entryValues="@array/notification_blink_rate_entriesValues"
+            android:key="notification_blink_rate_friends"
+            android:title="@string/notification_blink_rate" />
+    </PreferenceCategory>
 
-	<PreferenceCategory
-		android:dependency="enable_notification_synchro"
-		android:key="@string/messages"
-		android:title="@string/messages">
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_messages"
-			android:title="@string/notification_category_activate"/>
-		<RingtonePreference
-			android:dependency="notification_messages"
-			android:key="notification_sound_choice_messages"
-			android:ringtoneType="notification"
-			android:title="@string/notification_sound_choice"/>
-		<ListPreference
-			android:dependency="notification_messages"
-			android:key="notification_vibrate_choice_messages"
-			android:title="@string/notification_vibrate_choice"
-			android:dialogTitle="@string/notification_vibrate_choice"
-			android:entries="@array/notification_vibrate_entries"
-			android:entryValues="@array/notification_vibrate_entriesValues"
-			android:defaultValue="vibrate_double" />
-		<ListPreference
-			android:dependency="notification_messages"
-			android:key="notification_blink_rate_messages"
-			android:title="@string/notification_blink_rate"
-			android:dialogTitle="@string/notification_blink_rate_choice"
-			android:entries="@array/notification_blink_rate_entries"
-			android:entryValues="@array/notification_blink_rate_entriesValues"
-			android:defaultValue="slow" />
-	</PreferenceCategory>
+    <PreferenceCategory
+        android:dependency="enable_notification_synchro"
+        android:key="@string/messages"
+        android:title="@string/messages">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_messages"
+            android:title="@string/notification_category_activate" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notification_messages"
+            android:key="notification_sound_choice_messages"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="@string/notification_sound_choice" />
+        <ListPreference
+            android:defaultValue="vibrate_double"
+            android:dependency="notification_messages"
+            android:dialogTitle="@string/notification_vibrate_choice"
+            android:entries="@array/notification_vibrate_entries"
+            android:entryValues="@array/notification_vibrate_entriesValues"
+            android:key="notification_vibrate_choice_messages"
+            android:title="@string/notification_vibrate_choice" />
+        <ListPreference
+            android:defaultValue="slow"
+            android:dependency="notification_messages"
+            android:dialogTitle="@string/notification_blink_rate_choice"
+            android:entries="@array/notification_blink_rate_entries"
+            android:entryValues="@array/notification_blink_rate_entriesValues"
+            android:key="notification_blink_rate_messages"
+            android:title="@string/notification_blink_rate" />
+    </PreferenceCategory>
 
-	<PreferenceCategory
-		android:dependency="enable_notification_synchro"
-		android:key="@string/notifications"
-		android:title="@string/notifications">
-		<CheckBoxPreference
-			android:defaultValue="true"
-			android:key="notification_notifications"
-			android:title="@string/notification_category_activate"/>
-		<RingtonePreference
-			android:dependency="notification_notifications"
-			android:key="notification_sound_choice_notifications"
-			android:ringtoneType="notification"
-			android:title="@string/notification_sound_choice"/>
-		<ListPreference
-			android:dependency="notification_notifications"
-			android:key="notification_vibrate_choice_notifications"
-			android:title="@string/notification_vibrate_choice"
-			android:dialogTitle="@string/notification_vibrate_choice"
-			android:entries="@array/notification_vibrate_entries"
-			android:entryValues="@array/notification_vibrate_entriesValues"
-			android:defaultValue="vibrate_short" />
-		<ListPreference
-			android:dependency="notification_notifications"
-			android:key="notification_blink_rate_notifications"
-			android:title="@string/notification_blink_rate"
-			android:dialogTitle="@string/notification_blink_rate_choice"
-			android:entries="@array/notification_blink_rate_entries"
-			android:entryValues="@array/notification_blink_rate_entriesValues"
-			android:defaultValue="slow" />
-	</PreferenceCategory>
+    <PreferenceCategory
+        android:dependency="enable_notification_synchro"
+        android:key="@string/notifications"
+        android:title="@string/notifications">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_notifications"
+            android:title="@string/notification_category_activate" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notification_notifications"
+            android:key="notification_sound_choice_notifications"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="@string/notification_sound_choice" />
+        <ListPreference
+            android:defaultValue="vibrate_short"
+            android:dependency="notification_notifications"
+            android:dialogTitle="@string/notification_vibrate_choice"
+            android:entries="@array/notification_vibrate_entries"
+            android:entryValues="@array/notification_vibrate_entriesValues"
+            android:key="notification_vibrate_choice_notifications"
+            android:title="@string/notification_vibrate_choice" />
+        <ListPreference
+            android:defaultValue="slow"
+            android:dependency="notification_notifications"
+            android:dialogTitle="@string/notification_blink_rate_choice"
+            android:entries="@array/notification_blink_rate_entries"
+            android:entryValues="@array/notification_blink_rate_entriesValues"
+            android:key="notification_blink_rate_notifications"
+            android:title="@string/notification_blink_rate" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
