@@ -43,4 +43,7 @@
 
 	<string name="share">Share…</string>
 	<string name="show_share_button">Show share button in toolbar</string>
+	<string name="open">Open in browser</string>
+	<string name="logout">Logout</string>
+	<string name="quit">Quit</string>
 </resources>

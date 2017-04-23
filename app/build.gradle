@@ -8,8 +8,8 @@ android {
         applicationId "org.surrel.facebooknotifications"
         minSdkVersion 9
         targetSdkVersion 24
-        versionCode 12
-        versionName '1.9.2'
+        versionCode 13
+        versionName '1.10.0'
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {

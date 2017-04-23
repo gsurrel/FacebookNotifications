@@ -8,6 +8,11 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.10.0_
+   * Added shortcut to logout
+   * Added quit button
+   * Added a "Open in browser" button
+
 * _1.9.2_
    * Fixed a crash on wrong user input
 

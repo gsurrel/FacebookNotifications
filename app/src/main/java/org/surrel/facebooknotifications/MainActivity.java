@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -47,7 +48,9 @@ public class MainActivity extends Activity {
     private ValueCallback<Uri> mUM;
     private ValueCallback<Uri[]> mUMA;
     private final static int FCR = 1;
+    private String logoutUrl = "";
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,23 +76,29 @@ public class MainActivity extends Activity {
         webview = new WebView(this);
         webview.setWebViewClient(new WebViewClient());
         webview.loadData("<h1>" + getString(R.string.request_pending) + "</h1>", "text/html", "UTF-8");
+        webview.getSettings().setJavaScriptEnabled(true);
+        webview.addJavascriptInterface(this, "customInterface");
         webview.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                // Javascript URL injection is defined in UpdateService
+                webview.loadUrl("javascript:getLogout=function(){elt=document.querySelector(\"[href*='/logout']\"); return elt.href;};" +
+                        "window.customInterface.processLogoutStr(getLogout());");
                 updateShareIntent();
             }
         });
-        webview.setWebChromeClient(new WebChromeClient(){
+        webview.setWebChromeClient(new WebChromeClient() {
             //For Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg){
+            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
                 mUM = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("image/*");
-                MainActivity.this.startActivityForResult(Intent.createChooser(i,"File Chooser"), FCR);
+                MainActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), FCR);
             }
+
             // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
-            public void openFileChooser(ValueCallback uploadMsg, String acceptType){
+            public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
                 mUM = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -98,35 +107,37 @@ public class MainActivity extends Activity {
                         Intent.createChooser(i, "File Browser"),
                         FCR);
             }
+
             //For Android 4.1+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture){
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
                 mUM = uploadMsg;
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.addCategory(Intent.CATEGORY_OPENABLE);
                 i.setType("image/*");
                 MainActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), MainActivity.FCR);
             }
+
             //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    WebChromeClient.FileChooserParams fileChooserParams){
-                if(mUMA != null){
+                    WebChromeClient.FileChooserParams fileChooserParams) {
+                if (mUMA != null) {
                     mUMA.onReceiveValue(null);
                 }
                 mUMA = filePathCallback;
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if(takePictureIntent.resolveActivity(MainActivity.this.getPackageManager()) != null){
+                if (takePictureIntent.resolveActivity(MainActivity.this.getPackageManager()) != null) {
                     File photoFile = null;
-                    try{
+                    try {
                         photoFile = createImageFile();
                         takePictureIntent.putExtra("PhotoPath", mCM);
-                    }catch(IOException ex){
+                    } catch (IOException ex) {
                         Log.e("fbn", "Image file creation failed", ex);
                     }
-                    if(photoFile != null){
+                    if (photoFile != null) {
                         mCM = "file:" + photoFile.getAbsolutePath();
                         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                    }else{
+                    } else {
                         takePictureIntent = null;
                     }
                 }
@@ -134,9 +145,9 @@ public class MainActivity extends Activity {
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 contentSelectionIntent.setType("image/*");
                 Intent[] intentArray;
-                if(takePictureIntent != null){
+                if (takePictureIntent != null) {
                     intentArray = new Intent[]{takePictureIntent};
-                }else{
+                } else {
                     intentArray = new Intent[0];
                 }
 
@@ -154,6 +165,13 @@ public class MainActivity extends Activity {
         webview.loadUrl(targetURL);
         setContentView(webview);
         _dMsg("Debug build, timestamp " + BuildConfig.TIMESTAMP);
+    }
+
+    @SuppressWarnings("unused")
+    @JavascriptInterface
+    public void processLogoutStr(String logoutStr) {
+        Log.i("fbn.MainActivity", logoutStr);
+        if (logoutStr.contains("facebook.com")) this.logoutUrl = logoutStr;
     }
 
     @Override
@@ -196,6 +214,13 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_item_settings) {
             startActivityForResult(new Intent(MainActivity.this, PrefsActivity.class), SETTINGS_MENU);
+        } else if (item.getItemId() == R.id.menu_item_logout && !logoutUrl.isEmpty()) {
+            webview.loadUrl(logoutUrl);
+        } else if (item.getItemId() == R.id.menu_item_quit) {
+            finish();
+        } else if (item.getItemId() == R.id.menu_item_open_browser) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webview.getUrl()));
+            startActivity(Intent.createChooser(browserIntent, ""));
         }
         return true;
     }
@@ -258,15 +283,15 @@ public class MainActivity extends Activity {
     }
 
     // Create an image file
-    private File createImageFile() throws IOException{
+    private File createImageFile() throws IOException {
         @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "img_"+timeStamp+"_";
+        String imageFileName = "img_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName,".jpg",storageDir);
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 }

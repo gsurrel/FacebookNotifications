@@ -43,4 +43,7 @@
 
 	<string name="share">Partager…</string>
 	<string name="show_share_button">Afficher le bouton de partage</string>
+	<string name="logout">Déconnexion</string>
+	<string name="open">Ouvrir dans un navigateur</string>
+	<string name="quit">Quitter</string>
 </resources>
