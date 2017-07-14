@@ -2,6 +2,11 @@
 
 Small Android app for getting notified (friends, messages and notifications) while being privacy and battery friendly. It doesn't require the Facebook Platform to be turned on. It plays nicely with [SlimSocial for Facebook](https://f-droid.org/repository/browse/?fdfilter=SlimSOcial&fdid=it.rignanese.leo.slimfacebook).
 
+<a href="https://f-droid.org/packages/org.surrel.facebooknotifications" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="100"/></a>
+<a href="https://play.google.com/store/apps/details?id=org.surrel.facebooknotifications.gplay" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="100"/></a>
+
 [Direct link to release .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-release.apk) and [link to debug .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-debug.apk).
 
 ![Notifications for Facebook logo image](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/app/src/main/ic_launcher-web.png)
