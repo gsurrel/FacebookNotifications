@@ -13,6 +13,11 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.10.1_
+   * Upgrate API level for the Play Store to be happy
+   * Add link to DontKillMyApp
+   * Ask runtime permission to draw over other apps
+
 * _1.10.0_
    * Added shortcut to logout
    * Added quit button

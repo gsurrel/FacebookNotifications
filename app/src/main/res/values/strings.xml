@@ -46,4 +46,5 @@
 	<string name="open">Open in browser</string>
 	<string name="logout">Logout</string>
 	<string name="quit">Quit</string>
+    <string name="problems">Problems?</string>
 </resources>

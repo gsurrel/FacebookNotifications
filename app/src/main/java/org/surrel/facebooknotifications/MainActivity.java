@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -54,13 +55,21 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, 0);
+            }
+        }
+
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
         String targetURL = FB_URL;
 
-        if (getIntent().getExtras() != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR1) {
+        if (getIntent().getExtras() != null) {
             String url = getIntent().getExtras().getString("url", "");
             if (!"".equals(url)) {
                 targetURL = url;
@@ -88,39 +97,9 @@ public class MainActivity extends Activity {
             }
         });
         webview.setWebChromeClient(new WebChromeClient() {
-            //For Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-                mUM = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("image/*");
-                MainActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), FCR);
-            }
-
-            // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
-            public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-                mUM = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("*/*");
-                MainActivity.this.startActivityForResult(
-                        Intent.createChooser(i, "File Browser"),
-                        FCR);
-            }
-
-            //For Android 4.1+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-                mUM = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("image/*");
-                MainActivity.this.startActivityForResult(Intent.createChooser(i, "File Chooser"), MainActivity.FCR);
-            }
-
-            //For Android 5.0+
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
-                    WebChromeClient.FileChooserParams fileChooserParams) {
+                    FileChooserParams fileChooserParams) {
                 if (mUMA != null) {
                     mUMA.onReceiveValue(null);
                 }
@@ -195,10 +174,8 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem shareItem = menu.findItem(R.id.menu_item_share);
         shareAction = menu.findItem(R.id.menu_action_share);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            shareAction.setVisible(mPrefs.getBoolean(SHOW_SHARE_BUTTON, false));
-            mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
-        }
+        shareAction.setVisible(mPrefs.getBoolean(SHOW_SHARE_BUTTON, false));
+        mShareActionProvider = (ShareActionProvider) shareItem.getActionProvider();
         updateShareIntent();
         mMenu = menu;
         return super.onCreateOptionsMenu(menu);
@@ -214,13 +191,16 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_item_settings) {
             startActivityForResult(new Intent(MainActivity.this, PrefsActivity.class), SETTINGS_MENU);
-        } else if (item.getItemId() == R.id.menu_item_logout && !logoutUrl.isEmpty()) {
+        } else if (item.getItemId() == R.id.menu_item_logout && logoutUrl != null && !logoutUrl.isEmpty()) {
             webview.loadUrl(logoutUrl);
         } else if (item.getItemId() == R.id.menu_item_quit) {
             finish();
         } else if (item.getItemId() == R.id.menu_item_open_browser) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webview.getUrl()));
             startActivity(Intent.createChooser(browserIntent, ""));
+        } else if (item.getItemId() == R.id.menu_item_problems) {
+            Intent dontkillmyapp = new Intent(Intent.ACTION_VIEW, Uri.parse("https://dontkillmyapp.com/"));
+            startActivity(dontkillmyapp);
         }
         return true;
     }
@@ -272,7 +252,7 @@ public class MainActivity extends Activity {
 
     protected void updateShareIntent() {
         shareIntent.putExtra(Intent.EXTRA_TEXT, webview.getUrl());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && mShareActionProvider != null) {
+        if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(shareIntent);
         }
     }

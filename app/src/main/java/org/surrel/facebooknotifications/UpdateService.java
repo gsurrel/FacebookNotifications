@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -32,45 +33,45 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateService extends Service {
-    private static final int NOTIF_BASE     = 0;
-    private static final int NOTIF_LOGIN    = NOTIF_BASE + 1;
-    private static final int NOTIF_UNIFIED  = NOTIF_LOGIN + 1;
+    private static final int NOTIF_BASE = 0;
+    private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
+    private static final int NOTIF_UNIFIED = NOTIF_LOGIN + 1;
 
-    private static final String URL_HOME            = "https://m.facebook.com/";
-    private static final String URL_BOOKMARKS       = URL_HOME + "menu/bookmarks/";
+    private static final String URL_HOME = "https://m.facebook.com/";
+    private static final String URL_BOOKMARKS = URL_HOME + "menu/bookmarks/";
     private static final String URL_FRIEND_REQUESTS = URL_HOME + "friends/center/requests/";
-    private static final String URL_MESSAGES        = URL_HOME + "messages/";
-    private static final String URL_NOTIFICATIONS   = URL_HOME + "notifications.php";
+    private static final String URL_MESSAGES = URL_HOME + "messages/";
+    private static final String URL_NOTIFICATIONS = URL_HOME + "notifications.php";
 
-    private static final String PREF_FRIEND_REQUESTS    = "notification_friends";
-    private static final String PREF_MESSAGES           = "notification_messages";
-    private static final String PREF_NOTIFICATIONS      = "notification_notifications";
+    private static final String PREF_FRIEND_REQUESTS = "notification_friends";
+    private static final String PREF_MESSAGES = "notification_messages";
+    private static final String PREF_NOTIFICATIONS = "notification_notifications";
 
-    private static final String PREF_SOUND_FRIEND_REQUESTS  = "notification_sound_choice_friends";
-    private static final String PREF_SOUND_MESSAGES         = "notification_sound_choice_messages";
-    private static final String PREF_SOUND_NOTIFICATIONS    = "notification_sound_choice_notifications";
+    private static final String PREF_SOUND_FRIEND_REQUESTS = "notification_sound_choice_friends";
+    private static final String PREF_SOUND_MESSAGES = "notification_sound_choice_messages";
+    private static final String PREF_SOUND_NOTIFICATIONS = "notification_sound_choice_notifications";
 
-    private static final String PREF_VIBRATE_FRIEND_REQUESTS  = "notification_vibrate_choice_friends";
-    private static final String PREF_VIBRATE_MESSAGES         = "notification_vibrate_choice_messages";
-    private static final String PREF_VIBRATE_NOTIFICATIONS    = "notification_vibrate_choice_notifications";
+    private static final String PREF_VIBRATE_FRIEND_REQUESTS = "notification_vibrate_choice_friends";
+    private static final String PREF_VIBRATE_MESSAGES = "notification_vibrate_choice_messages";
+    private static final String PREF_VIBRATE_NOTIFICATIONS = "notification_vibrate_choice_notifications";
 
-    private static final String PREF_BLINK_FRIEND_REQUESTS  = "notification_blink_rate_choice_friends";
-    private static final String PREF_BLINK_MESSAGES         = "notification_blink_rate_choice_messages";
-    private static final String PREF_BLINK_NOTIFICATIONS    = "notification_blink_rate_choice_notifications";
+    private static final String PREF_BLINK_FRIEND_REQUESTS = "notification_blink_rate_choice_friends";
+    private static final String PREF_BLINK_MESSAGES = "notification_blink_rate_choice_messages";
+    private static final String PREF_BLINK_NOTIFICATIONS = "notification_blink_rate_choice_notifications";
 
-    private static final String KEY_VIBRATE_SHORT       = "vibrate_short";
-    private static final String KEY_VIBRATE_LONG        = "vibrate_long";
-    private static final String KEY_VIBRATE_DOUBLE      = "vibrate_double";
+    private static final String KEY_VIBRATE_SHORT = "vibrate_short";
+    private static final String KEY_VIBRATE_LONG = "vibrate_long";
+    private static final String KEY_VIBRATE_DOUBLE = "vibrate_double";
     private static final String KEY_VIBRATE_DOUBLE_LONG = "vibrate_double_long";
 
-    private static final String KEY_BLINK_NORMAL    = "normal";
-    private static final String KEY_BLINK_SLOW      = "slow";
-    private static final String KEY_BLINK_FRENETIC  = "frenetic";
+    private static final String KEY_BLINK_NORMAL = "normal";
+    private static final String KEY_BLINK_SLOW = "slow";
+    private static final String KEY_BLINK_FRENETIC = "frenetic";
 
-    private static final String PREF_NOTIFICATION_COUNTERS              = "NotifCount";
-    private static final String PREF_NOTIFICATION_COUNT_FRIENDS         = "nbFriends";
-    private static final String PREF_NOTIFICATION_COUNT_MESSAGES        = "nbMessages";
-    private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS   = "nbNotifications";
+    private static final String PREF_NOTIFICATION_COUNTERS = "NotifCount";
+    private static final String PREF_NOTIFICATION_COUNT_FRIENDS = "nbFriends";
+    private static final String PREF_NOTIFICATION_COUNT_MESSAGES = "nbMessages";
+    private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS = "nbNotifications";
 
     private WindowManager windowManager;
     private WebView webview;
@@ -109,38 +110,39 @@ public class UpdateService extends Service {
         webSettings.setUserAgentString(getString(R.string.app_name));
         webview.loadUrl(URL_BOOKMARKS);
 
+        int LAYOUT_FLAG;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+        }
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_TOAST,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                LAYOUT_FLAG,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.NO_GRAVITY;
-        params.x = 0;
-        params.y = 0;
-        params.width = 0;
-        params.height = 0;
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        windowManager.addView(webview, params);
+        params.x = 1;
+        params.y = 1;
+        params.width = 200;
+        params.height = 200;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(this))
+            {
+                windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+                windowManager.addView(webview, params);
+            } else {
+                windowManager = null;
+            }
+        } else {
+            windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+            windowManager.addView(webview, params);
+        }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
-
-    @SuppressWarnings("deprecation")
-    private Notification getLegacyNotification(int icon, String title, String text, Intent intent, int notifType, String soundURI, long[] vibrationPattern) {
-        Notification msg = new Notification(icon, title, System.currentTimeMillis());
-        msg.vibrate = vibrationPattern;
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-        if (soundURI != null) {
-            msg.sound = Uri.parse(soundURI);
-        }
-
-        msg.flags |= Notification.FLAG_AUTO_CANCEL;
-        msg.setLatestEventInfo(getApplicationContext(), title, text, pendingIntent);
-        return msg;
-    }
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private Notification.Builder getNewStyleNotification(int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType, String soundURI, long[] vibrationPattern) {
@@ -185,27 +187,16 @@ public class UpdateService extends Service {
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (json.getBoolean("login")) {
                 Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    Notification notif = getLegacyNotification(android.R.drawable.ic_dialog_alert,
-                            getString(R.string.could_not_get_notifications),
-                            getString(R.string.maybe_logged_out),
-                            resultIntent,
-                            NOTIF_LOGIN,
-                            null,
-                            new long[]{});
-                    mNotificationManager.notify(NOTIF_LOGIN, notif);
-                } else {
-                    Notification.Builder notif = getNewStyleNotification(android.R.drawable.ic_dialog_alert,
-                            BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher),
-                            getString(R.string.could_not_get_notifications),
-                            getString(R.string.maybe_logged_out),
-                            Notification.PRIORITY_LOW,
-                            resultIntent,
-                            NOTIF_LOGIN,
-                            null,
-                            new long[]{});
-                    mNotificationManager.notify(NOTIF_LOGIN, notif.build());
-                }
+                Notification.Builder notif = getNewStyleNotification(android.R.drawable.ic_dialog_alert,
+                        BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher),
+                        getString(R.string.could_not_get_notifications),
+                        getString(R.string.maybe_logged_out),
+                        Notification.PRIORITY_LOW,
+                        resultIntent,
+                        NOTIF_LOGIN,
+                        null,
+                        new long[]{});
+                mNotificationManager.notify(NOTIF_LOGIN, notif.build());
             } else {
                 // If we had a connection problem but now it's OK, remove the "login" notification
                 mNotificationManager.cancel(NOTIF_LOGIN);
@@ -290,69 +281,58 @@ public class UpdateService extends Service {
                         }
                     }
 
-                    // Notify for legacy devices, make it more specific otherwise
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        getLegacyNotification(R.drawable.ic_notification,
-                                getString(R.string.app_name),
-                                notifText,
-                                resultIntent,
-                                NOTIF_UNIFIED,
-                                soundURI,
-                                vibrationPattern);
-                    } else {
-                        // Basic common notification, will be altered for more important states (messages)
-                        Notification.Builder notif = getNewStyleNotification(R.drawable.ic_notification,
-                                BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher),
-                                getString(R.string.app_name),
-                                notifText,
-                                Notification.PRIORITY_DEFAULT,
-                                resultIntent,
-                                NOTIF_UNIFIED,
-                                soundURI,
-                                vibrationPattern);
+                    // Basic common notification, will be altered for more important states (messages)
+                    Notification.Builder notif = getNewStyleNotification(R.drawable.ic_notification,
+                            BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher),
+                            getString(R.string.app_name),
+                            notifText,
+                            Notification.PRIORITY_DEFAULT,
+                            resultIntent,
+                            NOTIF_UNIFIED,
+                            soundURI,
+                            vibrationPattern);
 
-                        // Set new priority and category if needed
-                        if (nbMessages > 0) {
-                            notif.setPriority(Notification.PRIORITY_HIGH);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                notif.setCategory(Notification.CATEGORY_MESSAGE);
-                            }
+                    // Set new priority and category if needed
+                    if (nbMessages > 0) {
+                        notif.setPriority(Notification.PRIORITY_HIGH);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            notif.setCategory(Notification.CATEGORY_MESSAGE);
                         }
-
-                        // Set blinking
-                        notif.setLights(Color.BLUE, rate[0], rate[1]);
-
-                        if (multipleCategories) {
-                            // If it's a multicategory notification, create the BigView, display in the same order as Facebook
-                            notif.setStyle(new Notification.BigTextStyle().bigText(notifText));
-                            if (nbFriends > 0) {
-                                Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse(URL_FRIEND_REQUESTS));
-                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                                sBuilder.addNextIntent(btnIntent);
-                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                                notif.addAction(R.drawable.ic_menu_invite, getString(R.string.friends), pi);
-                            }
-                            if (nbMessages > 0) {
-                                Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse(URL_MESSAGES));
-                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                                sBuilder.addNextIntent(btnIntent);
-                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                                notif.addAction(R.drawable.ic_menu_start_conversation, getString(R.string.messages), pi);
-                            }
-                            if (nbNotifications > 0) {
-                                Intent btnIntent = (Intent) resultIntent.clone();
-                                btnIntent.setData(Uri.parse(URL_NOTIFICATIONS));
-                                TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
-                                sBuilder.addNextIntent(btnIntent);
-                                PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                                notif.addAction(R.drawable.ic_menu_mapmode, getString(R.string.notifications), pi);
-                            }
-                        }
-
-                        mNotificationManager.notify(NOTIF_UNIFIED, notif.build());
                     }
+
+                    // Set blinking
+                    notif.setLights(Color.BLUE, rate[0], rate[1]);
+
+                    if (multipleCategories) {
+                        // If it's a multicategory notification, create the BigView, display in the same order as Facebook
+                        notif.setStyle(new Notification.BigTextStyle().bigText(notifText));
+                        if (nbFriends > 0) {
+                            Intent btnIntent = (Intent) resultIntent.clone();
+                            btnIntent.setData(Uri.parse(URL_FRIEND_REQUESTS));
+                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                            sBuilder.addNextIntent(btnIntent);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            notif.addAction(R.drawable.ic_menu_invite, getString(R.string.friends), pi);
+                        }
+                        if (nbMessages > 0) {
+                            Intent btnIntent = (Intent) resultIntent.clone();
+                            btnIntent.setData(Uri.parse(URL_MESSAGES));
+                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                            sBuilder.addNextIntent(btnIntent);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            notif.addAction(R.drawable.ic_menu_start_conversation, getString(R.string.messages), pi);
+                        }
+                        if (nbNotifications > 0) {
+                            Intent btnIntent = (Intent) resultIntent.clone();
+                            btnIntent.setData(Uri.parse(URL_NOTIFICATIONS));
+                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                            sBuilder.addNextIntent(btnIntent);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            notif.addAction(R.drawable.ic_menu_mapmode, getString(R.string.notifications), pi);
+                        }
+                    }
+
+                    mNotificationManager.notify(NOTIF_UNIFIED, notif.build());
                 } else {
                     Log.i("fbn.UpdateService", "Same number of events per categories, skipping notification");
                 }
@@ -400,7 +380,7 @@ public class UpdateService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (webview != null)
+        if (webview != null && windowManager != null)
             windowManager.removeView(webview);
     }
 

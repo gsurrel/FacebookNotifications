@@ -46,4 +46,5 @@
 	<string name="logout">Déconnexion</string>
 	<string name="open">Ouvrir dans un navigateur</string>
 	<string name="quit">Quitter</string>
+    <string name="problems">Problèmes ?</string>
 </resources>

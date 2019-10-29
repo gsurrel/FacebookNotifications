@@ -31,6 +31,10 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:showAsAction="never"
         android:title="@string/settings" />
+    <item android:id="@+id/menu_item_problems"
+        android:icon="@android:drawable/ic_dialog_alert"
+        android:showAsAction="never"
+        android:title="@string/problems" />
     <item
         android:id="@+id/menu_item_quit"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
