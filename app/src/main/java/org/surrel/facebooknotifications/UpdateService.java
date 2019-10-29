@@ -3,6 +3,7 @@ package org.surrel.facebooknotifications;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -72,6 +73,7 @@ public class UpdateService extends Service {
     private static final String PREF_NOTIFICATION_COUNT_FRIENDS = "nbFriends";
     private static final String PREF_NOTIFICATION_COUNT_MESSAGES = "nbMessages";
     private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS = "nbNotifications";
+    private static final String CHANNEL_ID = "NOTIFICATIONS_CHANNEL";
 
     private WindowManager windowManager;
     private WebView webview;
@@ -125,8 +127,8 @@ public class UpdateService extends Service {
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.NO_GRAVITY;
-        params.x = 1;
-        params.y = 1;
+        params.x = 0;
+        params.y = 0;
         params.width = 200;
         params.height = 200;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -146,6 +148,18 @@ public class UpdateService extends Service {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private Notification.Builder getNewStyleNotification(int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType, String soundURI, long[] vibrationPattern) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.R_string_notif_channel_name);
+            String description = getString(R.string.notif_channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
         Notification.Builder mBuilder =
                 new Notification.Builder(getApplicationContext())
                         .setSmallIcon(smallIcon)
@@ -154,6 +168,10 @@ public class UpdateService extends Service {
                         .setContentText(text)
                         .setPriority(priority)
                         .setAutoCancel(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mBuilder.setChannelId(CHANNEL_ID);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setCategory(Notification.CATEGORY_SOCIAL)

@@ -47,4 +47,6 @@
 	<string name="logout">Logout</string>
 	<string name="quit">Quit</string>
     <string name="problems">Problems?</string>
+    <string name="R.string.notif_channel_name">Notification</string>
+	<string name="notif_channel_description">Notifications from Facebook</string>
 </resources>
