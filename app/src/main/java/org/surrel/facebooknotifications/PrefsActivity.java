@@ -29,6 +29,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                 int newInterval = WakeupManager.DEFAULT_UPDATE_INTERVAL;
                 boolean updateIntervalSetting = false;
                 try{
+                    assert newIntervalStr != null;
                     newInterval = Integer.parseInt(newIntervalStr);
                 }catch (NumberFormatException e){
                     newIntervalStr = null;
@@ -57,9 +58,6 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
             case WakeupManager.ENABLE_NOTIFICATION_SYNCHRO:
                 Log.d("fbn.PrefsActivity", "Calling WakeupManager");
                 WakeupManager.updateNotificationSystem(this);
-                break;
-            case MainActivity.SHOW_SHARE_BUTTON:
-                setResult(MainActivity.RESULT_REDRAW_MENU);
                 break;
             default:
         }

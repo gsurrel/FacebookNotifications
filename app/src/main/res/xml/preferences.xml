@@ -16,11 +16,6 @@
         android:summary="@string/update_interval_summary"
         android:title="@string/update_interval" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="show_share_button"
-        android:title="@string/show_share_button" />
-
     <PreferenceCategory
         android:dependency="enable_notification_synchro"
         android:key="@string/friends"
@@ -86,6 +81,40 @@
             android:entries="@array/notification_blink_rate_entries"
             android:entryValues="@array/notification_blink_rate_entriesValues"
             android:key="notification_blink_rate_messages"
+            android:title="@string/notification_blink_rate" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:dependency="enable_notification_synchro"
+        android:key="@string/groups"
+        android:title="@string/groups">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="notification_groups"
+            android:title="@string/notification_category_activate" />
+        <RingtonePreference
+            android:defaultValue="content://settings/system/notification_sound"
+            android:dependency="notification_groups"
+            android:key="notification_sound_choice_groups"
+            android:ringtoneType="notification"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:title="@string/notification_sound_choice" />
+        <ListPreference
+            android:defaultValue="vibrate_double"
+            android:dependency="notification_groups"
+            android:dialogTitle="@string/notification_vibrate_choice"
+            android:entries="@array/notification_vibrate_entries"
+            android:entryValues="@array/notification_vibrate_entriesValues"
+            android:key="notification_vibrate_choice_groups"
+            android:title="@string/notification_vibrate_choice" />
+        <ListPreference
+            android:defaultValue="slow"
+            android:dependency="notification_groups"
+            android:dialogTitle="@string/notification_blink_rate_choice"
+            android:entries="@array/notification_blink_rate_entries"
+            android:entryValues="@array/notification_blink_rate_entriesValues"
+            android:key="notification_blink_rate_groups"
             android:title="@string/notification_blink_rate" />
     </PreferenceCategory>
 

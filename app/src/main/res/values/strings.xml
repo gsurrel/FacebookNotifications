@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Notifications for Facebook</string>
+    <string name="app_name">Notifications for FB</string>
 
 	<string name="request_pending">Request pending</string>
 	<string name="could_not_get_notifications">Could not retrieve notifications</string>
@@ -8,12 +8,14 @@
 	<string name="you_have">You have</string>
 	<string name="new_friend_requests">friend request(s)</string>
 	<string name="new_messages">new message(s)</string>
+    <string name="new_groups">new group activity(es)</string>
 	<string name="new_notifications">new notifications(s)</string>
 	<string name="new_friend_requests_short">request(s)</string>
 	<string name="new_messages_short">message(s)</string>
 	<string name="new_notifications_short">notifications(s)</string>
 	<string name="friends">Friends</string>
 	<string name="messages">Messages</string>
+    <string name="groups">Groups</string>
 	<string name="notifications">Notifications</string>
 
 	<string name="settings">Settings</string>
@@ -41,12 +43,10 @@
 	<string name="blink_normal">Normal</string>
 	<string name="blink_frenetic">Frenetic</string>
 
-	<string name="share">Share…</string>
-	<string name="show_share_button">Show share button in toolbar</string>
 	<string name="open">Open in browser</string>
-	<string name="logout">Logout</string>
 	<string name="quit">Quit</string>
     <string name="problems">Problems?</string>
+
     <string name="R.string.notif_channel_name">Notification</string>
 	<string name="notif_channel_description">Notifications from Facebook</string>
 </resources>

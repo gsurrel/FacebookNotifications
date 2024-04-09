@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Notifications pour Facebook</string>
+	<string name="app_name">Notifications pour FB</string>
 
 	<string name="request_pending">Requête en cours</string>
 	<string name="could_not_get_notifications">Impossible de récupérer les notifications</string>
@@ -8,12 +8,14 @@
 	<string name="you_have">Vous avez</string>
 	<string name="new_friend_requests">demande(s) d\'amitié</string>
 	<string name="new_messages">nouveau(x) messages(s)</string>
+	<string name="new_groups">nouvelle(s) activités sur les groupes.</string>
 	<string name="new_notifications">nouvelle(s) notification(s)</string>
 	<string name="new_friend_requests_short">demande(s)</string>
 	<string name="new_messages_short">message(s)</string>
 	<string name="new_notifications_short">notifications(s)</string>
 	<string name="friends">Amis</string>
 	<string name="messages">Messages</string>
+	<string name="groups">Groupes</string>
 	<string name="notifications">Notifications</string>
 
 	<string name="settings">Préférences</string>
@@ -41,9 +43,6 @@
     <string name="blink_normal">Normal</string>
     <string name="blink_frenetic">Frénétique</string>
 
-	<string name="share">Partager…</string>
-	<string name="show_share_button">Afficher le bouton de partage</string>
-	<string name="logout">Déconnexion</string>
 	<string name="open">Ouvrir dans un navigateur</string>
 	<string name="quit">Quitter</string>
     <string name="problems">Problèmes ?</string>

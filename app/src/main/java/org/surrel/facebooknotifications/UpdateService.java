@@ -1,7 +1,6 @@
 package org.surrel.facebooknotifications;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,6 +32,8 @@ import android.webkit.WebViewClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class UpdateService extends Service {
     private static final int NOTIF_BASE = 0;
     private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
@@ -42,22 +43,27 @@ public class UpdateService extends Service {
     private static final String URL_BOOKMARKS = URL_HOME + "menu/bookmarks/";
     private static final String URL_FRIEND_REQUESTS = URL_HOME + "friends/center/requests/";
     private static final String URL_MESSAGES = URL_HOME + "messages/";
+    private static final String URL_GROUPS = URL_HOME + "groups/";
     private static final String URL_NOTIFICATIONS = URL_HOME + "notifications.php";
 
     private static final String PREF_FRIEND_REQUESTS = "notification_friends";
     private static final String PREF_MESSAGES = "notification_messages";
+    private static final String PREF_GROUPS = "notification_groups";
     private static final String PREF_NOTIFICATIONS = "notification_notifications";
 
     private static final String PREF_SOUND_FRIEND_REQUESTS = "notification_sound_choice_friends";
     private static final String PREF_SOUND_MESSAGES = "notification_sound_choice_messages";
     private static final String PREF_SOUND_NOTIFICATIONS = "notification_sound_choice_notifications";
+    private static final String PREF_SOUND_GROUPS = "notification_sound_choice_groups";
 
     private static final String PREF_VIBRATE_FRIEND_REQUESTS = "notification_vibrate_choice_friends";
     private static final String PREF_VIBRATE_MESSAGES = "notification_vibrate_choice_messages";
+    private static final String PREF_VIBRATE_GROUPS = "notification_vibrate_choice_groups";
     private static final String PREF_VIBRATE_NOTIFICATIONS = "notification_vibrate_choice_notifications";
 
     private static final String PREF_BLINK_FRIEND_REQUESTS = "notification_blink_rate_choice_friends";
     private static final String PREF_BLINK_MESSAGES = "notification_blink_rate_choice_messages";
+    private static final String PREF_BLINK_GROUPS = "notification_blink_rate_choice_groups";
     private static final String PREF_BLINK_NOTIFICATIONS = "notification_blink_rate_choice_notifications";
 
     private static final String KEY_VIBRATE_SHORT = "vibrate_short";
@@ -72,6 +78,7 @@ public class UpdateService extends Service {
     private static final String PREF_NOTIFICATION_COUNTERS = "NotifCount";
     private static final String PREF_NOTIFICATION_COUNT_FRIENDS = "nbFriends";
     private static final String PREF_NOTIFICATION_COUNT_MESSAGES = "nbMessages";
+    private static final String PREF_NOTIFICATION_COUNT_GROUPS = "nbGroups";
     private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS = "nbNotifications";
     private static final String CHANNEL_ID = "NOTIFICATIONS_CHANNEL";
 
@@ -79,10 +86,34 @@ public class UpdateService extends Service {
     private WebView webview;
     private SharedPreferences sharedPreferences;
 
+    private static WindowManager.LayoutParams getLayoutParams() {
+        int LAYOUT_FLAG;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        } else {
+            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
+        }
+        return new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                LAYOUT_FLAG,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate() {
+        //TODO API 30->31: Foreground service launch restrictions
+        // adb shell device_config put activity_manager default_fgs_starts_restriction_notification_enabled true
+
+        //TODO API 30->31: Notification trampoline restrictions
+        // adb shell dumpsys activity service com.android.systemui/.dump.SystemUIAuxiliaryDumpService
         super.onCreate();
+
+        Log.i("fbn", "Started notification check");
 
         webview = new WebView(this);
         webview.setVisibility(View.GONE);
@@ -93,16 +124,21 @@ public class UpdateService extends Service {
             @Override
             public void onPageFinished(WebView view, String url) {
                 /* Copy-paste friendly version (for the '\'):
-                javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>strong"); return elt!=null ? elt.textContent.match(/[0-9]+/) : "null";};
-                            window.notification.processJSON(window.location.pathname=="/login.php" ? '{"login":true}' : '{"login":false'+',"friends":'+get("friends")
-                            +',"messages":'+get("messages")
-                            +',"notifications":'+get("notifications")+'}');
-
+javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>strong"); return elt!=null ? elt.textContent.match(/[0-9]+/) : "null";};
+            var jsonString = window.location.pathname=="/login.php" ? '{"login":true}' : '{"login":false'+',"friends":'+get("friends")+',"messages":'+get("messages")+',"groups":'+get("groups")+',"notifications":'+get("notifications")+'}';
+            document.querySelector('[name=accept_only_essential]')?.click();
+            console.log(jsonString);
+            console.log(document.body.innerHTML.substring(3900*0));
+            window.customInterface.processJSON(jsonString);
+            if(window.location.pathname=="/") window.close();
                  */
                 webview.loadUrl("javascript:get=function(url){elt=document.querySelector(\"[href*='/\"+url+\"']>strong\"); return elt!=null ? elt.textContent.match(/[0-9]+/) : \"null\";};\n" +
-                        "window.customInterface.processJSON(window.location.pathname==\"/login.php\" ? '{\"login\":true}' : '{\"login\":false'+',\"friends\":'+get(\"friends\")\n" +
-                        "+',\"messages\":'+get(\"messages\")\t\n" +
-                        "+',\"notifications\":'+get(\"notifications\")+'}');");
+                        "            var jsonString = window.location.pathname==\"/login.php\" ? '{\"login\":true}' : '{\"login\":false'+',\"friends\":'+get(\"friends\")+',\"messages\":'+get(\"messages\")+',\"groups\":'+get(\"groups\")+',\"notifications\":'+get(\"notifications\")+'}';\n" +
+                        "            document.querySelector('[name=accept_only_essential]')?.click();\n" +
+                        "            console.log(jsonString);\n" +
+                        "            console.log(document.body.innerHTML.substring(3900*0));\n" +
+                        "            window.customInterface.processJSON(jsonString);\n" +
+                        "            if(window.location.pathname==\"/\") window.close();");
                 Log.i("fbn.UpdateService", "Loading finished");
             }
         });
@@ -112,28 +148,14 @@ public class UpdateService extends Service {
         webSettings.setUserAgentString(getString(R.string.app_name));
         webview.loadUrl(URL_BOOKMARKS);
 
-        int LAYOUT_FLAG;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            LAYOUT_FLAG = WindowManager.LayoutParams.TYPE_PHONE;
-        }
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                LAYOUT_FLAG,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        WindowManager.LayoutParams params = getLayoutParams();
         params.gravity = Gravity.NO_GRAVITY;
         params.x = 0;
         params.y = 0;
         params.width = 200;
         params.height = 200;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Settings.canDrawOverlays(this))
-            {
+            if (Settings.canDrawOverlays(this)) {
                 windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
                 windowManager.addView(webview, params);
             } else {
@@ -146,8 +168,16 @@ public class UpdateService extends Service {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private Notification.Builder getNewStyleNotification(int smallIcon, Bitmap largeIcon, String title, String text, int priority, Intent resultIntent, int notifType, String soundURI, long[] vibrationPattern) {
+    private Notification.Builder getNewStyleNotification(
+            int smallIcon,
+            Bitmap largeIcon,
+            String title,
+            String text,
+            int priority,
+            Intent resultIntent,
+            String soundURI,
+            long[] vibrationPattern
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.R_string_notif_channel_name);
             String description = getString(R.string.notif_channel_description);
@@ -211,7 +241,6 @@ public class UpdateService extends Service {
                         getString(R.string.maybe_logged_out),
                         Notification.PRIORITY_LOW,
                         resultIntent,
-                        NOTIF_LOGIN,
                         null,
                         new long[]{});
                 mNotificationManager.notify(NOTIF_LOGIN, notif.build());
@@ -220,16 +249,19 @@ public class UpdateService extends Service {
                 mNotificationManager.cancel(NOTIF_LOGIN);
                 int nbFriends = sharedPreferences.getBoolean(PREF_FRIEND_REQUESTS, true) ? json.optInt("friends", 0) : 0;
                 int nbMessages = sharedPreferences.getBoolean(PREF_MESSAGES, true) ? json.optInt("messages", 0) : 0;
+                int nbGroups = sharedPreferences.getBoolean(PREF_GROUPS, true) ? json.optInt("groups", 0) : 0;
                 int nbNotifications = sharedPreferences.getBoolean(PREF_NOTIFICATIONS, true) ? json.optInt("notifications", 0) : 0;
 
                 SharedPreferences settings = getSharedPreferences(PREF_NOTIFICATION_COUNTERS, 0);
 
                 // If we have no notifications, remove the existing one
-                Log.i("fbn.UpdateService", "F:" + nbFriends + " M:" + nbMessages + " N:" + nbNotifications);
-                if (nbFriends + nbMessages + nbNotifications == 0) {
+                Log.i("fbn.UpdateService", "F:" + nbFriends + " M:" + nbMessages + " G:" + nbGroups + " N:" + nbNotifications);
+
+                if (nbFriends + nbMessages + nbGroups + nbNotifications == 0) {
                     mNotificationManager.cancel(NOTIF_UNIFIED);
                 } else if (nbFriends != settings.getInt(PREF_NOTIFICATION_COUNT_FRIENDS, 0)
                         || nbMessages != settings.getInt(PREF_NOTIFICATION_COUNT_MESSAGES, 0)
+                        || nbGroups != settings.getInt(PREF_NOTIFICATION_COUNT_GROUPS, 0)
                         || nbNotifications != settings.getInt(PREF_NOTIFICATION_COUNT_NOTIFICATIONS, 0)) { // If the count is the same as before, change nothing
 
                     // Build a notification
@@ -239,6 +271,7 @@ public class UpdateService extends Service {
                     boolean multipleCategories = false;
                     if ((nbFriends > 0 ? 1 : 0)
                             + (nbMessages > 0 ? 1 : 0)
+                            + (nbGroups > 0 ? 1 : 0)
                             + (nbNotifications > 0 ? 1 : 0) > 1) {
                         multipleCategories = true;
                         notifText = "";
@@ -257,6 +290,12 @@ public class UpdateService extends Service {
                         notifText = notifText + " " + nbMessages + " " +
                                 (multipleCategories ? getString(R.string.new_messages_short) : getString(R.string.new_messages));
                     }
+                    if (nbGroups > 0) {
+                        if (!first) notifText = notifText + ",";
+                        first = false;
+                        notifText = notifText + " " + nbGroups + " " +
+                                (multipleCategories ? getString(R.string.new_messages_short) : getString(R.string.new_groups));
+                    }
                     if (nbNotifications > 0) {
                         if (!first) notifText = notifText + ",";
                         notifText = notifText + " " + nbNotifications + " " +
@@ -270,17 +309,22 @@ public class UpdateService extends Service {
                     if (nbNotifications > 0) {
                         soundURI = sharedPreferences.getString(PREF_SOUND_NOTIFICATIONS, null);
                         vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_NOTIFICATIONS, KEY_VIBRATE_SHORT));
-                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_NOTIFICATIONS, ""));
+                        rate = getBlinkRate(Objects.requireNonNull(sharedPreferences.getString(PREF_BLINK_NOTIFICATIONS, "")));
                     }
                     if (nbFriends > 0) {
                         soundURI = sharedPreferences.getString(PREF_SOUND_FRIEND_REQUESTS, null);
                         vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_FRIEND_REQUESTS, KEY_VIBRATE_SHORT));
-                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_FRIEND_REQUESTS, ""));
+                        rate = getBlinkRate(Objects.requireNonNull(sharedPreferences.getString(PREF_BLINK_FRIEND_REQUESTS, "")));
                     }
                     if (nbMessages > 0) {
                         soundURI = sharedPreferences.getString(PREF_SOUND_MESSAGES, null);
                         vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_MESSAGES, KEY_VIBRATE_SHORT));
-                        rate = getBlinkRate(sharedPreferences.getString(PREF_BLINK_MESSAGES, ""));
+                        rate = getBlinkRate(Objects.requireNonNull(sharedPreferences.getString(PREF_BLINK_MESSAGES, "")));
+                    }
+                    if (nbGroups > 0) {
+                        soundURI = sharedPreferences.getString(PREF_SOUND_GROUPS, null);
+                        vibrationPattern = getPattern(sharedPreferences.getString(PREF_VIBRATE_GROUPS, KEY_VIBRATE_SHORT));
+                        rate = getBlinkRate(Objects.requireNonNull(sharedPreferences.getString(PREF_BLINK_GROUPS, "")));
                     }
 
                     // Build the intent
@@ -294,6 +338,9 @@ public class UpdateService extends Service {
                         if (nbMessages > 0) {
                             resultIntent.setData(Uri.parse(URL_MESSAGES));
                         }
+                        if (nbGroups > 0) {
+                            resultIntent.setData(Uri.parse(URL_GROUPS));
+                        }
                         if (nbNotifications > 0) {
                             resultIntent.setData(Uri.parse(URL_NOTIFICATIONS));
                         }
@@ -306,7 +353,6 @@ public class UpdateService extends Service {
                             notifText,
                             Notification.PRIORITY_DEFAULT,
                             resultIntent,
-                            NOTIF_UNIFIED,
                             soundURI,
                             vibrationPattern);
 
@@ -340,6 +386,14 @@ public class UpdateService extends Service {
                             PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                             notif.addAction(R.drawable.ic_menu_start_conversation, getString(R.string.messages), pi);
                         }
+                        if (nbGroups > 0) {
+                            Intent btnIntent = (Intent) resultIntent.clone();
+                            btnIntent.setData(Uri.parse(URL_GROUPS));
+                            TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
+                            sBuilder.addNextIntent(btnIntent);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            notif.addAction(R.drawable.ic_menu_groups, getString(R.string.messages), pi);
+                        }
                         if (nbNotifications > 0) {
                             Intent btnIntent = (Intent) resultIntent.clone();
                             btnIntent.setData(Uri.parse(URL_NOTIFICATIONS));
@@ -359,6 +413,7 @@ public class UpdateService extends Service {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putInt(PREF_NOTIFICATION_COUNT_FRIENDS, nbFriends);
                 editor.putInt(PREF_NOTIFICATION_COUNT_MESSAGES, nbMessages);
+                editor.putInt(PREF_NOTIFICATION_COUNT_GROUPS, nbGroups);
                 editor.putInt(PREF_NOTIFICATION_COUNT_NOTIFICATIONS, nbNotifications);
                 editor.apply();
             }
@@ -381,7 +436,7 @@ public class UpdateService extends Service {
     }
 
     private long[] getPattern(String string) {
-        switch (sharedPreferences.getString(string, KEY_VIBRATE_SHORT)) {
+        switch (Objects.requireNonNull(sharedPreferences.getString(string, KEY_VIBRATE_SHORT))) {
             case KEY_VIBRATE_SHORT:
                 return new long[]{0, 200};
             case KEY_VIBRATE_LONG:

@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="512"
-   height="512"
-   id="svg2"
-   version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="ic_notif.svg"
-   inkscape:export-filename="C:\Users\surrel\ownCloud\androidStudio_workspace_perso\FacebookNotifications\app\src\main\ic_notif.png"
-   inkscape:export-xdpi="45"
-   inkscape:export-ydpi="45">
+<svg width="512" height="512" id="svg2" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    sodipodi:docname="ic_notif.svg" inkscape:export-filename="C:\Users\surrel\ownCloud\androidStudio_workspace_perso\FacebookNotifications\app\src\main\ic_notif.png"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    inkscape:export-xdpi="45" inkscape:export-ydpi="45" inkscape:version="1.3.2 (091e20e, 2023-11-25)">
   <defs
      id="defs4">
     <inkscape:perspective
@@ -34,18 +22,13 @@
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.1704838"
-     inkscape:cx="145.61319"
-     inkscape:cy="164.07945"
+     showgrid="false" inkscape:cx="94.788709" inkscape:cy="189.57742"
+      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1178"
-     inkscape:window-x="1912"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:pagecheckerboard="1" inkscape:pageshadow="2" inkscape:showpageshadow="0"
+      inkscape:window-height="847" inkscape:window-maximized="0" inkscape:window-width="1440"
+      inkscape:window-x="0" inkscape:window-y="25" inkscape:zoom="1.0233286" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -54,7 +37,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+          <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -90,5 +73,19 @@
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cccccsssscscccsccccscsssssccssss" />
     </g>
+      <g id="g2" transform="matrix(2.5802643,0,0,2.5802643,-234.6074,520.75875)">
+          <path
+              style="fill:none;stroke:#ffffff;stroke-width:3.77953;stroke-dasharray:none;stroke-opacity:0.970075"
+              d="M 60.347692,39.558701 A 22.928938,22.928938 0 0 1 40.260964,62.3108 22.928938,22.928938 0 0 1 15.194442,45.199279 22.928938,22.928938 0 0 1 29.066813,18.204983 22.928938,22.928938 0 0 1 57.572498,28.624223" id="path1" sodipodi:arc-type="arc" sodipodi:cx="37.418755"
+              sodipodi:cy="39.558701" sodipodi:end="5.7860774" sodipodi:open="true"
+              sodipodi:rx="22.928938" sodipodi:ry="22.928938" sodipodi:start="0"
+              sodipodi:type="arc" />
+          <path
+              style="fill:none;stroke:#ffffff;stroke-width:3.77953;stroke-dasharray:none;stroke-opacity:0.970075"
+              d="M 37.268654,56.745427 A 22.928938,22.928938 0 0 1 57.98929,34.569089 22.928938,22.928938 0 0 1 82.563068,52.380998 22.928938,22.928938 0 0 1 67.934632,78.973169 22.928938,22.928938 0 0 1 39.73425,67.753848" id="path2" sodipodi:arc-type="arc" sodipodi:cx="60.188465"
+              sodipodi:cy="57.392319" sodipodi:end="2.6727014" sodipodi:open="true"
+              sodipodi:rx="22.928938" sodipodi:ry="22.928938" sodipodi:start="3.1698093"
+              sodipodi:type="arc" />
+      </g>
   </g>
 </svg>
