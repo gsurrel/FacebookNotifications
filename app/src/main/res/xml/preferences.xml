@@ -151,5 +151,18 @@
             android:key="notification_blink_rate_notifications"
             android:title="@string/notification_blink_rate" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:dependency="enable_notification_synchro"
+        android:key="DEBUG"
+        android:title="DEBUG">
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="user_agent"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="User-Agent" />
+    </PreferenceCategory>
 
 </PreferenceScreen>
