@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(false);
-        webSettings.setUserAgentString(getString(R.string.user_agent));
+        webSettings.setUserAgentString(mPrefs.getString("user_agent", "Mozilla/5.0 (Linux; Android 7.0; Pixel C Build/NRD91D; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.124 Safari/537.36 [FB_IAB/FB4A;FBAV/98.0.0.18.70;]"));
         webview.loadUrl(targetURL);
         setContentView(webview);
         _dMsg("Debug build, timestamp " + BuildConfig.TIMESTAMP);
