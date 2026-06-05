@@ -13,6 +13,9 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.11.0_
+   * Open links to other apps (such as email and phone links) with the matching app
+
 * _1.10.1_
   * Upgrade API level for the Play Store to be happy
    * Add link to DontKillMyApp
