@@ -75,6 +75,24 @@ public class MainActivity extends Activity {
                 // Javascript URL injection is defined in UpdateService
                 webview.loadUrl("javascript:;");
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url == null) {
+                    return false;
+                }
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    return false;
+                }
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    view.getContext().startActivity(intent);
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
         });
 
         WebSettings webSettings = webview.getSettings();
