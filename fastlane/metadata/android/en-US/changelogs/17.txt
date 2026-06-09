@@ -1,0 +1,7 @@
+What's new in 1.12.0?
+
+- Links behave better: email, phone and other links now open the right app on your device.
+- Workaround Facebook browsers checks.
+- Added support for Groups notifications, sharing the page, and picking images.
+
+If something looks wrong after updating, please report it: https://github.com/gsurrel/FacebookNotifications/issues
