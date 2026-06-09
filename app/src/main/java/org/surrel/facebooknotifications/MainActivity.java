@@ -1,5 +1,7 @@
 package org.surrel.facebooknotifications;
 
+import static org.surrel.facebooknotifications.UpdateService.FALLBACK_USER_AGENT;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.Context;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -107,18 +110,60 @@ public class MainActivity extends AppCompatActivity {
                 updateShareIntent();
             }
 
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url == null) return false;
-                if (url.startsWith("http://") || url.startsWith("https://")) return false;
-                try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    view.getContext().startActivity(intent);
-                    return true;
-                } catch (Exception e) {
+            private boolean handleUrl(WebView view, String url) {
+                Uri uri = Uri.parse(url);
+
+                String host = uri.getHost();
+                if (host != null && host.endsWith("facebook.com")) {
                     return false;
                 }
+
+                if (url.startsWith("intent:")) {
+                    try {
+                        Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+
+                        if (intent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(intent);
+                            return true;
+                        }
+
+                        String fallback = intent.getStringExtra("browser_fallback_url");
+                        if (fallback != null) {
+                            view.loadUrl(fallback);
+                            return true;
+                        }
+
+                    } catch (Exception ignored) {
+                    }
+                    return true;
+                }
+
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                        return true;
+                    } catch (Exception ignored) {
+                    }
+                    return false;
+                }
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(browserIntent);
+                return true;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    return handleUrl(view, request.getUrl().toString());
+                }
+                return false;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleUrl(view, url);
             }
         });
 
@@ -129,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mUMA = filePathCallback;
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(MainActivity.this.getPackageManager()) != null) {
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     File photoFile = null;
                     try {
                         photoFile = createImageFile();
@@ -165,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
 
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(false);
-        webSettings.setUserAgentString(mPrefs.getString("user_agent", "Mozilla/5.0 (Linux; Android 7.0; Pixel C Build/NRD91D; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.124 Safari/537.36 [FB_IAB/FB4A;FBAV/98.0.0.18.70;]"));
+        webSettings.setUserAgentString(mPrefs.getString("user_agent", FALLBACK_USER_AGENT));
+
         webview.loadUrl(targetURL);
         setContentView(webview);
         _dMsg("Debug build, timestamp " + BuildConfig.TIMESTAMP);
