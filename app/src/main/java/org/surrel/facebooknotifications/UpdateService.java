@@ -82,6 +82,8 @@ public class UpdateService extends Service {
     private static final String PREF_NOTIFICATION_COUNT_NOTIFICATIONS = "nbNotifications";
     private static final String CHANNEL_ID = "NOTIFICATIONS_CHANNEL";
 
+    public static final String FALLBACK_USER_AGENT = "curl/7.79.1";
+
     private WindowManager windowManager;
     private WebView webview;
     private SharedPreferences sharedPreferences;
@@ -115,6 +117,8 @@ public class UpdateService extends Service {
 
         Log.i("fbn", "Started notification check");
 
+        sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+
         webview = new WebView(this);
         webview.setVisibility(View.GONE);
         webview.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
@@ -145,7 +149,7 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
 
         WebSettings webSettings = webview.getSettings();
         webSettings.setBlockNetworkImage(true);
-        webSettings.setUserAgentString(getString(R.string.app_name));
+        webSettings.setUserAgentString(sharedPreferences == null ? FALLBACK_USER_AGENT : sharedPreferences.getString("user_agent", FALLBACK_USER_AGENT));
         webview.loadUrl(URL_BOOKMARKS);
 
         WindowManager.LayoutParams params = getLayoutParams();
@@ -165,7 +169,6 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
             windowManager.addView(webview, params);
         }
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     private Notification.Builder getNewStyleNotification(
@@ -210,8 +213,13 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
         stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Added FLAG_IMMUTABLE for Android 12+ compatibility
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, pendingIntentFlags);
         mBuilder.setContentIntent(resultPendingIntent);
 
         if (soundURI != null) {
@@ -293,8 +301,7 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
                     if (nbGroups > 0) {
                         if (!first) notifText = notifText + ",";
                         first = false;
-                        notifText = notifText + " " + nbGroups + " " +
-                                (multipleCategories ? getString(R.string.new_messages_short) : getString(R.string.new_groups));
+                        notifText = notifText + " " + nbGroups + " " + getString(R.string.new_groups);
                     }
                     if (nbNotifications > 0) {
                         if (!first) notifText = notifText + ",";
@@ -375,7 +382,7 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
                             btnIntent.setData(Uri.parse(URL_FRIEND_REQUESTS));
                             TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                             sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0));
                             notif.addAction(R.drawable.ic_menu_invite, getString(R.string.friends), pi);
                         }
                         if (nbMessages > 0) {
@@ -383,7 +390,7 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
                             btnIntent.setData(Uri.parse(URL_MESSAGES));
                             TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                             sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0));
                             notif.addAction(R.drawable.ic_menu_start_conversation, getString(R.string.messages), pi);
                         }
                         if (nbGroups > 0) {
@@ -391,15 +398,15 @@ javascript:get=function(url){elt=document.querySelector("[href*='/"+url+"']>stro
                             btnIntent.setData(Uri.parse(URL_GROUPS));
                             TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                             sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                            notif.addAction(R.drawable.ic_menu_groups, getString(R.string.messages), pi);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0));
+                            notif.addAction(R.drawable.ic_menu_groups, getString(R.string.groups), pi);
                         }
                         if (nbNotifications > 0) {
                             Intent btnIntent = (Intent) resultIntent.clone();
                             btnIntent.setData(Uri.parse(URL_NOTIFICATIONS));
                             TaskStackBuilder sBuilder = TaskStackBuilder.create(this);
                             sBuilder.addNextIntent(btnIntent);
-                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pi = sBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0));
                             notif.addAction(R.drawable.ic_menu_mapmode, getString(R.string.notifications), pi);
                         }
                     }

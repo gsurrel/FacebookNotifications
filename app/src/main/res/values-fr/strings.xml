@@ -43,6 +43,7 @@
     <string name="blink_normal">Normal</string>
     <string name="blink_frenetic">Frénétique</string>
 
+	<string name="share">Partager</string>
 	<string name="open">Ouvrir dans un navigateur</string>
 	<string name="quit">Quitter</string>
     <string name="problems">Problèmes ?</string>
