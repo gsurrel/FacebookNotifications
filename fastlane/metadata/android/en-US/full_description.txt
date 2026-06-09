@@ -1,0 +1,13 @@
+Small Android app for getting notified (friends, messages, groups and notifications)
+while being privacy-friendly. It doesn't require the Facebook Platform to be turned
+on. It should be low on the battery usage.
+
+AntiFeatures:
+* NonFreeNet: You are required to log in to Facebook.
+
+Source code: https://github.com/gsurrel/FacebookNotifications
+Issue tracker: https://github.com/gsurrel/FacebookNotifications/issues
+Changelog and release notes: https://github.com/gsurrel/FacebookNotifications#changelog
+
+License: MIT
+Author: gsurrel - https://gregoire.surrel.org/
