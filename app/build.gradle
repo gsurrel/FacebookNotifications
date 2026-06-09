@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 34
+    compileSdk = 37
     defaultConfig {
         applicationId "org.surrel.facebooknotifications"
         minSdkVersion 16
@@ -13,7 +13,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
@@ -21,17 +21,18 @@ android {
     }
     productFlavors {
     }
-    namespace 'org.surrel.facebooknotifications'
+    namespace = 'org.surrel.facebooknotifications'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation 'androidx.preference:preference:1.2.1'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.concurrent:concurrent-futures:1.1.0'
