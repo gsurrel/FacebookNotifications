@@ -13,8 +13,12 @@ Small Android app for getting notified (friends, messages and notifications) whi
 
 ## Changelog
 
+* _1.12.0_
+  * Customise user-agent to bypass Facebook's browser check
+  * Fixup intent handling (eg. `intent:`)
+
 * _1.11.1_
-  * Fix build configuration for F-Droid to be able to build the app again.
+  * Fix build configuration for F-Droid to be able to build the app again
 
 * _1.11.0_
    * Open links to other apps (such as email and phone links) with the matching app
