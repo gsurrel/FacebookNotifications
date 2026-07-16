@@ -7,11 +7,14 @@ Small Android app for getting notified (friends, messages and notifications) whi
 <a href="https://play.google.com/store/apps/details?id=org.surrel.facebooknotifications.gplay" target="_blank">
 <img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="100"/></a>
 
-[Direct link to release .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-release.apk) and [link to debug .apk file](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-debug.apk).
+[Use the F-Droid website](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/FacebookNotifications-release.apk) to have a direct download of the `.apk` file.
 
 ![Notifications for Facebook logo image](https://raw.githubusercontent.com/gsurrel/FacebookNotifications/master/app/src/main/ic_launcher-web.png)
 
 ## Changelog
+
+* _1.12.1_
+  * Fix startup crash caused by "new" Android API levels.
 
 * _1.12.0_
   * Customise user-agent to bypass Facebook's browser check
