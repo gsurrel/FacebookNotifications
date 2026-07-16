@@ -1,0 +1,1 @@
+Telefonunuzu yeniden başlattıktan sonra bildirimlerin çalışmayı durdurabileceği bir sorun düzeltildi. Bildirimler artık herhangi bir ekstra adım olmadan güvenilir bir şekilde tekrar görünmelidir.

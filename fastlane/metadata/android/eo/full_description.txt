@@ -1,0 +1,11 @@
+Malgranda Android-apo por ricevi sciigojn (amikojn, mesaĝojn, grupojn kaj sciigojn) dum oni protektas privatecon. Ĝi ne postulas, ke la Facebook-Platformo estu ŝaltita. Ĝi devus uzi malmulte da baterio.
+
+KontraŭTrajtoj:
+* NonFreeNet: Vi devas ensaluti al Facebook.
+
+Fontkodo: https://github.com/gsurrel/FacebookNotifications
+Problemspurilo: https://github.com/gsurrel/FacebookNotifications/issues
+Ŝanĝoprotokolo kaj eldonaj notoj: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Permesilo: MIT
+Aŭtoro: gsurrel - https://gregoire.surrel.org/

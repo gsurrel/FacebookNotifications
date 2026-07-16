@@ -1,0 +1,11 @@
+一款小巧的 Android 應用程式，可在保護您隱私的同時接收通知（好友、訊息、群組和通知）。它不需要開啟 Facebook 平台。它的耗電量應該很低。
+
+反特性：
+* NonFreeNet：您需要登入 Facebook。
+
+原始碼：https://github.com/gsurrel/FacebookNotifications
+問題追蹤：https://github.com/gsurrel/FacebookNotifications/issues
+更新日誌和發佈說明：https://github.com/gsurrel/FacebookNotifications#changelog
+
+授權條款：MIT
+作者：gsurrel - https://gregoire.surrel.org/

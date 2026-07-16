@@ -1,0 +1,11 @@
+אפליקציית אנדרואיד קטנה לקבלת התראות (חברים, הודעות, קבוצות והתראות) תוך שמירה על הפרטיות. היא אינה דורשת את הפעלת פלטפורמת פייסבוק. היא צריכה לצרוך מעט סוללה.
+
+תכונות שליליות:
+* NonFreeNet: נדרש להתחבר לפייסבוק.
+
+קוד מקור: https://github.com/gsurrel/FacebookNotifications
+עוקב בעיות: https://github.com/gsurrel/FacebookNotifications/issues
+יומן שינויים והערות שחרור: https://github.com/gsurrel/FacebookNotifications#changelog
+
+רישיון: MIT
+מחבר: gsurrel - https://gregoire.surrel.org/

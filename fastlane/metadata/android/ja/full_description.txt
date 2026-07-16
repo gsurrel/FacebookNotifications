@@ -1,0 +1,11 @@
+プライバシーに配慮しながら、通知（友達、メッセージ、グループ、通知）を受け取るための小さなAndroidアプリです。Facebookプラットフォームをオンにする必要はありません。バッテリー消費量も少なくなるはずです。
+
+アンチ機能:
+* NonFreeNet: Facebookへのログインが必要です。
+
+ソースコード: https://github.com/gsurrel/FacebookNotifications
+問題追跡: https://github.com/gsurrel/FacebookNotifications/issues
+変更履歴とリリースノート: https://github.com/gsurrel/FacebookNotifications#changelog
+
+ライセンス: MIT
+作者: gsurrel - https://gregoire.surrel.org/

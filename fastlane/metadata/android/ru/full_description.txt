@@ -1,0 +1,11 @@
+Небольшое Android-приложение для получения уведомлений (друзья, сообщения, группы и уведомления) с уважением к вашей конфиденциальности. Не требует включения Платформы Facebook. Должно экономно расходовать заряд батареи.
+
+АнтиФункции:
+* NonFreeNet: Требуется вход в аккаунт Facebook.
+
+Исходный код: https://github.com/gsurrel/FacebookNotifications
+Отслеживание проблем: https://github.com/gsurrel/FacebookNotifications/issues
+Журнал изменений и примечания к выпуску: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Лицензия: MIT
+Автор: gsurrel - https://gregoire.surrel.org/

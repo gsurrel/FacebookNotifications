@@ -1,0 +1,11 @@
+Aplikasi Android kecil untuk mendapatkan notifikasi (teman, pesan, grup, dan notifikasi) sambil tetap menjaga privasi. Aplikasi ini tidak memerlukan Platform Facebook untuk diaktifkan. Seharusnya hemat penggunaan baterai.
+
+AntiFitur:
+* NonFreeNet: Anda diharuskan untuk masuk ke Facebook.
+
+Kode sumber: https://github.com/gsurrel/FacebookNotifications
+Pelacak masalah: https://github.com/gsurrel/FacebookNotifications/issues
+Catatan perubahan dan rilis: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Lisensi: MIT
+Penulis: gsurrel - https://gregoire.surrel.org/

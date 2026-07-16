@@ -1,0 +1,11 @@
+Programu ndogo ya Android ya kupokea arifa (marafiki, ujumbe, vikundi na arifa) huku ikilinda faragha yako. Haihitaji Jukwaa la Facebook kuwa limewashwa. Inapaswa kutumia betri kidogo.
+
+Vipengele Haswa:
+* NonFreeNet: Unahitaji kuingia kwenye Facebook.
+
+Msimbo wa chanzo: https://github.com/gsurrel/FacebookNotifications
+Kifuatiliaji cha matatizo: https://github.com/gsurrel/FacebookNotifications/issues
+Kumbukumbu ya mabadiliko na maelezo ya toleo: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Leseni: MIT
+Mwandishi: gsurrel - https://gregoire.surrel.org/

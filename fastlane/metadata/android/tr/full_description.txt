@@ -1,0 +1,11 @@
+Gizliliğinizi korurken bildirimleri (arkadaşlar, mesajlar, gruplar ve bildirimler) almanız için küçük bir Android uygulaması. Facebook Platformunun açık olmasını gerektirmez. Düşük pil kullanımı sağlamalıdır.
+
+Karşıt Özellikler:
+* NonFreeNet: Facebook'a giriş yapmanız gerekmektedir.
+
+Kaynak kodu: https://github.com/gsurrel/FacebookNotifications
+Sorun izleyici: https://github.com/gsurrel/FacebookNotifications/issues
+Değişiklik günlüğü ve sürüm notları: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Lisans: MIT
+Yazar: gsurrel - https://gregoire.surrel.org/

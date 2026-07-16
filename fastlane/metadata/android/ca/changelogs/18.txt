@@ -1,0 +1,1 @@
+S'ha solucionat un problema on les notificacions podien deixar de funcionar després de reiniciar el telèfon. Ara les notificacions haurien d'aparèixer de manera fiable sense passos addicionals.

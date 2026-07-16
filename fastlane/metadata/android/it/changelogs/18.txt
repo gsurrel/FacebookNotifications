@@ -1,0 +1,1 @@
+Risolto un problema per cui le notifiche potevano smettere di funzionare dopo il riavvio del telefono. Ora le notifiche dovrebbero apparire di nuovo in modo affidabile senza alcun passaggio aggiuntivo.

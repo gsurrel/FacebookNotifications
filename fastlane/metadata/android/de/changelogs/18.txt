@@ -1,0 +1,1 @@
+Ein Problem behoben, bei dem Benachrichtigungen nach einem Neustart des Telefons nicht mehr funktionierten. Benachrichtigungen sollten jetzt zuverlässig und ohne zusätzliche Schritte wieder erscheinen.

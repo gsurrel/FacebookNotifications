@@ -1,0 +1,1 @@
+Se ha solucionado un problema por el cual las notificaciones podían dejar de funcionar tras reiniciar el teléfono. Ahora las notificaciones deberían aparecer de forma fiable sin necesidad de pasos adicionales.
