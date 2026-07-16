@@ -1,0 +1,1 @@
+Opraven problém, kdy oznámení mohla přestat fungovat po restartování telefonu. Oznámení by se nyní měla spolehlivě zobrazovat bez nutnosti dalších kroků.

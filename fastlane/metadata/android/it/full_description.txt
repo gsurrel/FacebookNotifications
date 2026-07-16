@@ -1,0 +1,11 @@
+Piccola app Android per ricevere notifiche (amici, messaggi, gruppi e notifiche) rispettando la tua privacy. Non richiede che la Piattaforma Facebook sia attivata. Dovrebbe avere un basso consumo della batteria.
+
+AntiCaratteristiche:
+* NonFreeNet: È richiesto l'accesso a Facebook.
+
+Codice sorgente: https://github.com/gsurrel/FacebookNotifications
+Tracker dei problemi: https://github.com/gsurrel/FacebookNotifications/issues
+Registro delle modifiche e note di rilascio: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Licenza: MIT
+Autore: gsurrel - https://gregoire.surrel.org/

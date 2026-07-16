@@ -1,0 +1,1 @@
+Correction d'un problème où les notifications pouvaient cesser de fonctionner après le redémarrage de votre téléphone. Les notifications devraient désormais apparaître de manière fiable sans aucune étape supplémentaire.

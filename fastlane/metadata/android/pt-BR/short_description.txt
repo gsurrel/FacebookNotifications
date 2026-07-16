@@ -1,0 +1,1 @@
+App de notificações do Facebook que respeita a privacidade.

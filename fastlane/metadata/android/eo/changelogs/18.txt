@@ -1,0 +1,1 @@
+Riparita problemo, kie sciigoj povus ĉesi funkcii post restarto de via telefono. Sciigoj nun devus aperi fidinde sen pliaj paŝoj.

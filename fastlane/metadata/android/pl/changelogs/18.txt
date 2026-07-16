@@ -1,0 +1,1 @@
+Naprawiono problem, w którym powiadomienia mogły przestać działać po ponownym uruchomieniu telefonu. Powiadomienia powinny teraz pojawiać się niezawodnie bez żadnych dodatkowych kroków.

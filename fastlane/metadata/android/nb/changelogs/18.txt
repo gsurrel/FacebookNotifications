@@ -1,0 +1,1 @@
+Løste et problem der varsler kunne slutte å fungere etter at du startet telefonen på nytt. Varsler skal nå vises pålitelig igjen uten ekstra trinn.

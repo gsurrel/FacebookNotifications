@@ -1,0 +1,11 @@
+Aip bheag Android chun fógraí a fháil (cairde, teachtaireachtaí, grúpaí agus fógraí) agus do phríobháideachas á chosaint. Ní theastaíonn Ardán Facebook a bheith casta air. Ba chóir go mbeadh sé íseal ar úsáid ceallraí.
+
+Frithghnéithe:
+* NonFreeNet: Tá ort logáil isteach ar Facebook.
+
+Cód foinseach: https://github.com/gsurrel/FacebookNotifications
+Rianaire saincheisteanna: https://github.com/gsurrel/FacebookNotifications/issues
+Athraigh loga agus nótaí scaoilte: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Ceadúnas: MIT
+Údar: gsurrel - https://gregoire.surrel.org/

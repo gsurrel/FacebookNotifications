@@ -1,0 +1,11 @@
+Malá aplikace pro Android pro přijímání oznámení (žádosti o přátelství, zprávy, skupiny a oznámení), která je šetrná k soukromí. Nevyžaduje zapnutí platformy Facebook. Měla by mít nízkou spotřebu baterie.
+
+AntiFunkce:
+* NonFreeNet: Je vyžadováno přihlášení k účtu Facebook.
+
+Zdrojový kód: https://github.com/gsurrel/FacebookNotifications
+Sledování problémů: https://github.com/gsurrel/FacebookNotifications/issues
+Seznam změn a poznámky k vydání: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Licence: MIT
+Autor: gsurrel - https://gregoire.surrel.org/

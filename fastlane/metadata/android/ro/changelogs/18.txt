@@ -1,0 +1,1 @@
+S-a rezolvat o problemă prin care notificările puteau înceta să funcționeze după repornirea telefonului. Notificările ar trebui să apară acum din nou în mod fiabil, fără pași suplimentari.

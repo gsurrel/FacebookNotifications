@@ -1,0 +1,11 @@
+Aplicație mică pentru Android pentru a primi notificări (prieteni, mesaje, grupuri și notificări) în timp ce protejează confidențialitatea. Nu necesită ca Platforma Facebook să fie activată. Ar trebui să aibă un consum redus de baterie.
+
+AntiCaracteristici:
+* NonFreeNet: Este necesar să vă autentificați pe Facebook.
+
+Cod sursă: https://github.com/gsurrel/FacebookNotifications
+Urmărirea problemelor: https://github.com/gsurrel/FacebookNotifications/issues
+Jurnal de modificări și note de lansare: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Licență: MIT
+Autor: gsurrel - https://gregoire.surrel.org/

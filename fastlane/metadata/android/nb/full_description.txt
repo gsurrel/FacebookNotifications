@@ -1,0 +1,11 @@
+Liten Android-app for å motta varsler (venner, meldinger, grupper og varsler) samtidig som personvernet ivaretas. Den krever ikke at Facebook-plattformen er slått på. Den bør ha lavt batteriforbruk.
+
+AntiFunksjoner:
+* NonFreeNet: Du må logge inn på Facebook.
+
+Kildekode: https://github.com/gsurrel/FacebookNotifications
+Problemsporer: https://github.com/gsurrel/FacebookNotifications/issues
+Endringslogg og utgivelsesnotater: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Lisens: MIT
+Forfatter: gsurrel - https://gregoire.surrel.org/

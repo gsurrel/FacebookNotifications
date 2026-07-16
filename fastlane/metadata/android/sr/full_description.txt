@@ -1,0 +1,11 @@
+Мала Android апликација за примање обавештења (пријатељи, поруке, групе и обавештења) уз поштовање ваше приватности. Не захтева укључивање Facebook платформе. Требало би да троши мало батерије.
+
+АнтиКарактеристике:
+* NonFreeNet: Потребно је да се пријавите на Facebook.
+
+Изворни код: https://github.com/gsurrel/FacebookNotifications
+Праћење проблема: https://github.com/gsurrel/FacebookNotifications/issues
+Евиденција промена и белешке о издању: https://github.com/gsurrel/FacebookNotifications#changelog
+
+Лиценца: MIT
+Аутор: gsurrel - https://gregoire.surrel.org/
