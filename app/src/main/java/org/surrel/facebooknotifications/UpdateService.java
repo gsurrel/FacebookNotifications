@@ -34,7 +34,7 @@ import org.json.JSONObject;
 import java.util.Objects;
 
 public class UpdateService extends Service {
-    private static final int NOTIF_BASE = 0;
+    private static final int NOTIF_BASE = 1000;
     private static final int NOTIF_LOGIN = NOTIF_BASE + 1;
     private static final int NOTIF_UNIFIED = NOTIF_LOGIN + 1;
 
@@ -107,12 +107,27 @@ public class UpdateService extends Service {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate() {
-        //TODO API 30->31: Foreground service launch restrictions
-        // adb shell device_config put activity_manager default_fgs_starts_restriction_notification_enabled true
-
-        //TODO API 30->31: Notification trampoline restrictions
-        // adb shell dumpsys activity service com.android.systemui/.dump.SystemUIAuxiliaryDumpService
         super.onCreate();
+
+        // CRITICAL: Must be called within 5s of startForegroundService()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    getString(R.string.R_string_notif_channel_name),
+                    NotificationManager.IMPORTANCE_LOW // Low importance for background sync
+            );
+            channel.setDescription(getString(R.string.notif_channel_description));
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            if (nm != null) nm.createNotificationChannel(channel);
+
+            Notification foregroundNotif = new Notification.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText("Checking for updates...")
+                    .build();
+
+            startForeground(NOTIF_BASE, foregroundNotif);
+        }
 
         Log.i("fbn", "Started notification check");
 
